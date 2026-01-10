@@ -3,78 +3,53 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<!--
-		POM del proyecto SaludConecta
-
-		Comentarios útiles:
-		- Para compilar: `mvn clean package` (genera JAR en `target/`).
-		- Ejecutar en desarrollo: `mvn spring-boot:run`.
-		- Empaquetar sin tests: `mvn -DskipTests package`.
-		- Generar clases jOOQ desde la BD: `mvn generate-sources` (usa la ejecución jooq-codegen).
-		- Las credenciales de base de datos usadas por jOOQ se leen desde propiedades (por ejemplo
-		  definidas en `~/.m2/settings.xml` o mediante perfiles seguros). Aquí se referencian
-		  como `${db.driver}`, `${db.url}`, `${db.user}`, `${db.password}`.
-	-->
-
-	<!-- Versión del modelo POM (no tocar) -->
 	<modelVersion>4.0.0</modelVersion>
 
-	<!--
-		Hereda configuración base de Spring Boot.
-		El `spring-boot-starter-parent` proporciona versiones por defecto, manejo de recursos,
-		configuración de plugins y buenas prácticas para proyectos Spring Boot.
-		Cambiar la versión aquí actualiza la plataforma Spring Boot usada.
-	-->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.8</version>
-		<relativePath /> <!-- Busca el padre en el repositorio (vacío = usar repositorio remoto) -->
+		<relativePath />
 	</parent>
 
-	<!-- Datos del proyecto: identificadores y descripción -->
 	<groupId>com.fran</groupId>
 	<artifactId>salud-conecta</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>SaludConecta</name>
 	<description>Gestión clínica</description>
 
-	<!-- Propiedades globales: aquí poner las versiones y parámetros reutilizables -->
 	<properties>
-		<!-- Versión de Java que debe usar el compilador y el runtime del proyecto -->
 		<java.version>21</java.version>
 	</properties>
 
-	<!-- Dependencias necesarias: añadir, eliminar o versionar aquí. -->
-	<!-- Nota: el parent de Spring Boot trae versiones por defecto para la mayoría de artefactos. -->
 	<dependencies>
 
-		<!-- Mail: para enviar notificaciones por correo (configurar en application.yml). -->
+		<!-- Mail: para enviar notificaciones por correo -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
-		<!-- Apache POI: lectura/escritura de ficheros Excel (.xlsx). -->
+		<!-- Apache POI: lectura/escritura de ficheros Excel  -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>5.2.5</version>
 		</dependency>
 
-		<!-- Acceso a BD usando JDBC y soporte Spring para mapeo simple -->
+		<!-- Acceso a BD usando JDBC  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jdbc</artifactId>
 		</dependency>
 
-		<!-- Seguridad: autenticación/autorización con Spring Security -->
+		<!-- Seguridad: autenticación/autorización  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-		<!-- Thymeleaf: motor de plantillas para vistas HTML en servidor -->
+		<!-- Thymeleaf: motor de plantillas para vistas HTML -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -86,13 +61,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- Extras Thymeleaf para integrar con Spring Security (th:if|authorize..). -->
+		<!-- Extras Thymeleaf para integrar con Spring Security -->
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
 		</dependency>
 
-		<!-- Devtools: recarga automática en desarrollo. Nunca usar en producción. -->
+		<!-- Desarrollo: recarga automática -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -100,21 +75,44 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Driver PostgreSQL: runtime-only. Configurar URL/credenciales en application.yml o env. -->
+		<!-- PostgreSQL -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Lombok: reduce boilerplate (getters/setters/constructores). Requiere soporte en IDE. -->
+		<!-- Lombok: reduce boilerplate -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Dependencias para pruebas unitarias e integración con Spring Boot -->
+		<!-- jOOQ: librerías para construir consultas SQL -->
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+		</dependency>
+
+		<!-- jOOQ junto con el plugin de maven para generación automática -->
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-codegen</artifactId>
+		</dependency>
+
+		<!-- Starter para validación con anotaciones -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- Dependencias para pruebas unitarias -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -128,40 +126,12 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- jOOQ: librerías para construir consultas SQL de forma typesafe y generar código -->
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>jooq</artifactId>
-		</dependency>
-
-		<!-- jOOQ-meta y jOOQ-codegen se usan junto con el plugin de maven para generación automática -->
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>jooq-meta</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jooq</groupId>
-			<artifactId>jooq-codegen</artifactId>
-		</dependency>
-
-		<!-- Starter para validación con anotaciones (Bean Validation: @NotNull, @Size, ...) -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-
 	</dependencies>
 
-	<!-- Configuración de compilación y plugins -->
 	<build>
 		<plugins>
 
-			<!--
-				maven-compiler-plugin: configuración de compilation y procesadores de anotaciones.
-				Aquí se añade Lombok como annotation processor para que las anotaciones se apliquen
-				en tiempo de compilación y no sea necesario modificar el código fuente.
-			-->
+			<!-- Compilador Java + procesador Lombok (genera getters/setters en tiempo de compilación) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -175,23 +145,13 @@
 				</configuration>
 			</plugin>
 
-			<!--
-				spring-boot-maven-plugin: empaqueta la aplicación como ejecutable (fat JAR) y permite
-				ejecutar con `mvn spring-boot:run`. Normalmente no es necesario excluir Lombok aquí.
-			-->
+			<!-- Empaqueta la app como JAR ejecutable  -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
-			<!--
-				jOOQ codegen plugin: genera clases Java a partir del esquema de la base de datos.
-				- Se ejecuta en la fase `generate-sources`.
-				- Necesita las propiedades JDBC (`db.driver`, `db.url`, `db.user`, `db.password`).
-				- El directorio de salida es `target/generated-sources/jooq`.
-				Recomendación: no subir credenciales al repo; usar `~/.m2/settings.xml` o variables
-				de entorno en un perfil seguro.
-			-->
+			<!-- Genera clases Java desde el esquema PostgreSQL -->
 			<plugin>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
@@ -204,7 +164,7 @@
 						</goals>
 						<configuration>
 							<jdbc>
-								<!-- Las propiedades deben definirse fuera del POM (por seguridad) -->
+								<!-- Las propiedades se definen fuera del POM -->
 								<driver>${db.driver}</driver>
 								<url>${db.url}</url>
 								<user>${db.user}</user>

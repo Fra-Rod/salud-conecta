@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // Ejecuta la app con el perfil 'dev'
+            // Esto hace que Spring Boot cargue application-dev.yml con tus credenciales locales
+            "type": "java",
+            "name": "SaludConecta (Dev)",
+            "request": "launch",
+            "mainClass": "com.fran.saludconecta.SaludConectaApplication",
+            "projectName": "salud-conecta",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "dev"
+            }
+        }
+    ]
+}

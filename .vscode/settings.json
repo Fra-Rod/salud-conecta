@@ -1,0 +1,61 @@
+{
+    // Actualiza automáticamente la configuración del proyecto cuando cambias pom.xml
+    "java.configuration.updateBuildConfiguration": "automatic",
+    // Organiza los imports automáticamente al guardar
+    "java.saveActions.organizeImports": true,
+    // Usa ./mvnw (Maven Wrapper)
+    "maven.executable.preferMavenWrapper": true,
+    // Usa la versión de Java configurada en JAVA_HOME para ejecutar Maven
+    "maven.terminal.useJavaHome": true,
+    // Formatea automáticamente el código al guardar
+    "editor.formatOnSave": true,
+    // Organiza imports al guardar
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+    // Límite de líneas visual
+    "editor.rulers": [
+        80,
+        120
+    ],
+    // Ajusta líneas largas automáticamente 
+    "editor.wordWrap": "on",
+    // Edición sincronizada de etiquetas HTML
+    "editor.linkedEditing": true,
+    // Colorea pares de llaves, corchetes y paréntesis
+    "editor.bracketPairColorization.enabled": true,
+    // Elimina espacios en blanco al final de las líneas al guardar
+    "files.trimTrailingWhitespace": true,
+    // Asegura que cada archivo termine con una línea vacía
+    "files.insertFinalNewline": true,
+    // Codificación de archivos UTF-8
+    "files.encoding": "utf8",
+    // Validación de application.yml
+    "yaml.schemas": {
+        "https://json.schemastore.org/application.json": "application*.yml"
+    },
+    "yaml.format.enable": true,
+    "yaml.validate": true,
+    // Formatters
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java",
+        "editor.tabSize": 4,
+        "editor.insertSpaces": false
+    },
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml",
+        "editor.tabSize": 2
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features",
+        "editor.tabSize": 2
+    },
+    // Terminal
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.fontSize": 13,
+    "debug.console.fontSize": 13,
+    "debug.console.wordWrap": true,
+    // Ordena archivos por tipo
+    "explorer.sortOrder": "type",
+    "explorer.confirmDelete": true
+}

@@ -1,42 +1,10 @@
-HELP.md
+# Maven
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+.mvn/wrapper/maven-wrapper.jar
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-# Excluir .vscode/ completo previene subir configs personales
-# Si quieres compartir launch.json y extensions.json, comenta esta línea
-# y añade solo: .vscode/settings.json
-.vscode/
-
-### Archivos de configuración con datos sensibles ###
-# Estos archivos contienen credenciales y NO deben subirse nunca
+# Archivos con credenciales sensibles
 src/main/resources/application-dev.yml
 src/main/resources/application-local.yml
 src/main/resources/application-prod.yml
@@ -44,5 +12,8 @@ src/main/resources/application-prod.yml
 .env.local
 .env.*.local
 
-### Docker ###
-docker-compose.override.yml
+# MacOS
+.DS_Store
+
+# Help
+HELP.md

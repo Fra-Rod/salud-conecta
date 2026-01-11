@@ -1,12 +1,14 @@
 package com.fran.saludconecta.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.fran.saludconecta.cita.dto.CitaDTO;
 import com.fran.saludconecta.cita.service.ICitaService;
 import com.fran.saludconecta.informe.service.IInformeService;
 import com.fran.saludconecta.negocio.service.INegocioService;
@@ -36,24 +38,19 @@ public class VistaController {
     public String redirigirAlLogin() {
         return "redirect:/login";
     }
-	
-	@GetMapping("/login")
-	public String login() {
+
+    @GetMapping("/login")
+    public String login() {
         return "login";
     }
 
     @GetMapping("/inicio")
     public String inicio(Principal principal, Model model) {
 
-        // Integer usuarioId = getUsuarioIdFromPrincipal(principal);
-
-
-
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
-        // Intenta obtener el DTO completo del usuario activo para mostrar más detalles en el perfil
+        // Usuario completo para detalles perfil
         UsuarioDTO usuarioDto = null;
         try {
             usuarioDto = usuarioService.mostrarTodos().stream()
@@ -78,14 +75,12 @@ public class VistaController {
         Integer totalInformes = informeService.mostrarTodos().size();
         model.addAttribute("totalInformes", totalInformes);
 
+        List<CitaDTO> citasProximas = citaService.proximasPorUsuario(usuarioDto.getId(), 5);
+        model.addAttribute("proximasCitas", citasProximas.size());
 
         // Datos de citas para el usuario activo
-
-        var proximas = citaService.proximasPorUsuario(usuarioDto.getId(), 5);    // método sugerido en service
-        var citasHoy = citaService.citasHoyPorUsuario(usuarioDto.getId());      // método sugerido
-
-        model.addAttribute("proximasCitas", proximas.size());
-        model.addAttribute("citasHoy", citasHoy); // lista de citas para iterar
+        List<CitaDTO> citasHoy = citaService.citasHoyPorUsuario(usuarioDto.getId());
+        model.addAttribute("citasHoy", citasHoy);
 
         return "inicio";
     }

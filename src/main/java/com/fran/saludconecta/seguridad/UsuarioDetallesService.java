@@ -1,10 +1,14 @@
 package com.fran.saludconecta.seguridad;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.fran.saludconecta.usuario.dto.UsuarioDTO;
 import com.fran.saludconecta.usuario.service.IUsuarioService;
 
 @Service
@@ -15,14 +19,14 @@ public class UsuarioDetallesService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Buscar usuario en BD por NOMBRE (o podrías usar email)
-        var usuarios = usuarioService.mostrarTodos(); // Obtiene TODOS los usuarios
-        var usuario = usuarios.stream()
-            .filter(u -> u.getNombre().equals(username)) // Busca por nombre
-            .findFirst()
-            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
-        
-        // Devuelve el usuario adaptado a UserDetails
-        return new UsuarioDetalles(usuario);
+        List<UsuarioDTO> todosLosUsuarios = usuarioService.mostrarTodos();
+
+        for (UsuarioDTO usuarioDTO : todosLosUsuarios) {
+            if (usuarioDTO.getNombre().equals(username)) {
+                return new UsuarioDetalles(usuarioDTO);
+            }
+        }
+
+        throw new UsernameNotFoundException("Usuario no encontrado: " + username);
     }
 }

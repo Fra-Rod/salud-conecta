@@ -1,11 +1,12 @@
 package com.fran.saludconecta.seguridad;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import com.fran.saludconecta.usuario.dto.UsuarioDTO;
 import java.util.Collection;
 import java.util.Collections;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fran.saludconecta.usuario.dto.UsuarioDTO;
 
 public class UsuarioDetalles implements UserDetails {
 
@@ -17,24 +18,17 @@ public class UsuarioDetalles implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convertimos el rol del usuario a GrantedAuthority
-        // (Spring Security entiende esto para autorización)
-        if (usuario.getRolUsuario() != null) {
-            return Collections.singleton(
-                new SimpleGrantedAuthority("ROLE_" + usuario.getRolUsuario().name())
-            );
-        }
         return Collections.emptyList();
     }
 
     @Override
     public String getPassword() {
-        return usuario.getPassword(); // El password en texto plano de la BD
+        return usuario.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return usuario.getNombre(); // Usamos nombre como username
+        return usuario.getNombre();
     }
 
     @Override

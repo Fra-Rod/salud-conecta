@@ -12,19 +12,6 @@
             background-color: #f0f0f0;
         }
 
-        .table th {
-            background-color: #0d6efd;
-            color: white;
-        }
-
-        .filter-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
         footer {
             text-align: center;
             margin-top: 30px;
@@ -72,7 +59,8 @@
 
                 <form class="d-flex align-items-center me-3" th:action="@{/logout}" method="post">
                     <button class="btn btn-sm btn-light" type="submit">
-                        <i class="fas fa-sign-out-alt"></i>Cerrar sesión
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar sesión
                     </button>
                 </form>
             </div>
@@ -162,15 +150,11 @@
                         <td th:text="${cita.nombreUsuario}">Profesional</td>
                         <td class="text-center" th:text="${#temporals.format(cita.fechaCita, 'dd/MM/yyyy HH:mm')}">
                             01/12/2025 09:00</td>
-                        <td
-                            th:text="${cita.motivo != null && cita.motivo.length() > 50 ? cita.motivo.substring(0, 50) + '...' : cita.motivo}">
-                            Motivo</td>
+                        <td th:text="${cita.motivo}">Motivo</td>
                         <td class="text-center">
-                            <span class="badge"
-                                th:classappend="${cita.estado != null ? (cita.estado.toString().toLowerCase() == 'pendiente' ? 'bg-warning text-dark' : (cita.estado.toString().toLowerCase() == 'confirmada' ? 'bg-success' : 'bg-danger')) : 'bg-secondary'}"
-                                th:text="${cita.estado != null ? cita.estado.literal : 'Sin estado'}">
-                                Estado
-                            </span>
+                            <span class="badge bg-primary" th:if="${cita.estado != null}"
+                                th:text="${cita.estado.literal}">Estado</span>
+                            <span class="badge bg-secondary" th:if="${cita.estado == null}">Sin estado</span>
                         </td>
                         <td class="text-center">
                             <a th:href="@{'/cita/eliminar/' + ${cita.id}}" class="btn btn-sm btn-danger">

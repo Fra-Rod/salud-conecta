@@ -4,13 +4,8 @@ target/
 !**/src/test/**/target/
 .mvn/wrapper/maven-wrapper.jar
 
-# Archivos con credenciales sensibles
+# Archivo con credenciales sensibles
 src/main/resources/application-dev.yml
-src/main/resources/application-local.yml
-src/main/resources/application-prod.yml
-.env
-.env.local
-.env.*.local
 
 # MacOS
 .DS_Store

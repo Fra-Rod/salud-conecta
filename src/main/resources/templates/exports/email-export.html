@@ -9,39 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
-        }
-
-        header {
-            background-color: #0d6efd;
-            color: white;
-            padding: 15px;
-        }
-
-        nav a,
-        nav form button {
-            color: white;
-            margin-right: 15px;
-            text-decoration: none;
-        }
-
-        nav form {
-            display: inline;
+            background-color: #f0f0f0;
         }
 
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 10px;
-            color: #6c757d;
-        }
-
-        .email-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
+            margin-top: 30px;
+            padding: 15px;
         }
     </style>
 </head>
@@ -57,22 +31,22 @@
 
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}"><i class="fas fa-home"></i> Inicio</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}"><i
-                                class="fas fa-user-injured"></i> Pacientes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}"><i class="fas fa-users"></i>
-                            Usuarios</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}"><i
-                                class="fas fa-laptop-file"></i> Informes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}"><i class="fas fa-building"></i>
-                            Negocios</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}"><i
-                                class="fas fa-calendar-days"></i> Calendario</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}"><i class="fas fa-download"></i>
-                            Exportar</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}"><i class="fas fa-envelope"></i>
-                            Correo</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}">
+                            <i class="fas fa-home"></i> Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}">
+                            <i class="fas fa-user-injured"></i> Pacientes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}">
+                            <i class="fas fa-users"></i> Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}">
+                            <i class="fas fa-laptop-file"></i> Informes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}">
+                            <i class="fas fa-building"></i> Negocios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}">
+                            <i class="fas fa-calendar-days"></i> Calendario</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}">
+                            <i class="fas fa-download"></i> Exportar</a></li>
+                    <li class="nav-item"><a class="nav-link active" th:href="@{/exports/email}">
+                            <i class="fas fa-envelope"></i> Correo</a></li>
                 </ul>
 
                 <div class="d-flex align-items-center text-white me-3">
@@ -93,10 +67,11 @@
     </nav>
 
     <main class="container mt-5">
-        <div th:if="${mensaje}" th:class="'alert alert-' + tipoMensaje" role="alert">
-            <i class="fas me-2" th:classappend="${tipoMensaje} == 'success' ? 'fa-check-circle text-success' :
-                       (${tipoMensaje} == 'danger' ? 'fa-times-circle text-danger' :
-                       'fa-exclamation-circle text-warning')"></i>
+        <div th:if="${mensaje}" th:class="'alert alert-' + ${tipoMensaje}" role="alert">
+            <i class="fas fa-check-circle me-2" th:if="${tipoMensaje == 'success'}"></i>
+            <i class="fas fa-times-circle me-2" th:if="${tipoMensaje == 'danger'}"></i>
+            <i class="fas fa-exclamation-circle me-2"
+                th:if="${tipoMensaje != 'success' and tipoMensaje != 'danger'}"></i>
             <span th:text="${mensaje}">Mensaje</span>
         </div>
 
@@ -106,61 +81,60 @@
 
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="email-card">
-                    <form th:action="@{/export/pacientes/email}" method="post" class="needs-validation" novalidate>
-                        <h3 class="mb-4"><i class="fas fa-user-injured text-primary me-2"></i>Enviar Lista de Pacientes
-                        </h3>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form th:action="@{/export/pacientes/email}" method="post" class="needs-validation" novalidate>
+                            <h3 class="mb-4"><i class="fas fa-user-injured text-primary me-2"></i>Enviar Lista de
+                                Pacientes
+                            </h3>
 
-                        <div class="mb-3">
-                            <label for="destinatarioPacientes" class="form-label">Dirección de Email</label>
-                            <input type="email" class="form-control" id="destinatarioPacientes" name="destinatario"
-                                required placeholder="ejemplo@dominio.com">
-                            <div class="invalid-feedback">
-                                Por favor, introduce una dirección de email válida.
+                            <div class="mb-3">
+                                <label for="destinatarioPacientes" class="form-label">Dirección de Email</label>
+                                <input type="email" class="form-control" id="destinatarioPacientes" name="destinatario"
+                                    required placeholder="ejemplo@dominio.com">
+                                <div class="invalid-feedback">
+                                    Por favor, introduce una dirección de email válida.
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane me-1"></i> Enviar Excel
-                            </button>
-                        </div>
-                    </form>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-1"></i> Enviar Excel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
-                <div class="email-card">
-                    <form th:action="@{/export/informes/email}" method="post" class="needs-validation" novalidate>
-                        <h3 class="mb-4"><i class="fas fa-laptop-file text-primary me-2"></i>Enviar Lista de Informes
-                        </h3>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form th:action="@{/export/informes/email}" method="post" class="needs-validation" novalidate>
+                            <h3 class="mb-4"><i class="fas fa-laptop-file text-primary me-2"></i>Enviar Lista de
+                                Informes
+                            </h3>
 
-                        <div class="mb-3">
-                            <label for="destinatarioInformes" class="form-label">Dirección de Email</label>
-                            <input type="email" class="form-control" id="destinatarioInformes" name="destinatario"
-                                required placeholder="ejemplo@dominio.com">
-                            <div class="invalid-feedback">
-                                Por favor, introduce una dirección de email válida.
+                            <div class="mb-3">
+                                <label for="destinatarioInformes" class="form-label">Dirección de Email</label>
+                                <input type="email" class="form-control" id="destinatarioInformes" name="destinatario"
+                                    required placeholder="ejemplo@dominio.com">
+                                <div class="invalid-feedback">
+                                    Por favor, introduce una dirección de email válida.
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane me-1"></i> Enviar Excel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="text-center mt-4">
-                    <a th:href="@{/exports/excel}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-1"></i> Volver a Exportar
-                    </a>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-1"></i> Enviar Excel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
     <footer>
-        <hr />
         <p>&copy; 2025 SaludConecta</p>
     </footer>
 

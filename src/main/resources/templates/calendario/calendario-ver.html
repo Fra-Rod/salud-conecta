@@ -77,8 +77,9 @@
                 </div>
 
                 <form class="d-flex align-items-center me-3" th:action="@{/logout}" method="post">
-                    <button class="btn btn-sm btn-outline-light" type="submit">
-                        <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
+                    <button class="btn btn-sm btn-light" type="submit">
+                        <i class="fas fa-sign-out-alt"></i>Cerrar sesión
+                    </button>
                 </form>
             </div>
         </div>
@@ -128,22 +129,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- monthGrid: lista de semanas -> cada semana es lista de 7 enteros -->
                     <tr th:each="week : ${monthGrid}">
                         <td th:each="day : ${week}">
                             <div th:if="${day > 0}">
                                 <strong th:text="${day}">1</strong>
                                 <div th:if="${citasPorDia[day + ''] != null}">
                                     <div th:each="c : ${citasPorDia[day + '']}">
-                                        <!-- badge con hora y paciente -->
-                                        <span class="event-badge"
-                                            th:classappend="${c.estado != null ? (c.estado.toString().toLowerCase() == 'pendiente' ? 'bg-warning text-dark' : (c.estado.toString().toLowerCase() == 'confirmada' ? 'bg-success text-white' : 'bg-danger text-white')) : 'bg-info text-dark'}"
-                                            th:title="${c.motivo}">
+                                        <span class="event-badge bg-primary text-white" th:title="${c.motivo}">
                                             <span class="event-time"
                                                 th:text="${#temporals.format(c.fechaCita,'HH:mm')}">09:00</span>
-                                            <span
-                                                th:text="${c.nombrePaciente != null ? c.nombrePaciente : (c.nombre != null ? c.nombre : 'Cita')}">Nombre
-                                                Paciente</span>
+                                            <span th:if="${c.motivo != null}" th:text="${c.motivo}">Motivo</span>
+                                            <span th:if="${c.motivo == null}">Cita</span>
+                                            <span th:if="${c.estado != null}"
+                                                th:text="' - ' + ${c.estado.literal}"></span>
                                         </span>
                                     </div>
                                 </div>
@@ -160,9 +158,11 @@
             <ul class="list-group">
                 <li class="list-group-item" th:each="c : ${citasHoy}">
                     <strong th:text="${#temporals.format(c.fechaCita,'dd/MM/yyyy HH:mm')}">30/11/2025 09:00</strong>
-                    — <span th:text="${c.nombrePaciente != null ? c.nombrePaciente : c.nombre}">Paciente</span>
-                    <span class="text-muted" th:text="${c.estado != null ? c.estado.literal : ''}"
-                        style="margin-left: 8px;">ESTADO</span>
+                    —
+                    <span th:if="${c.motivo != null}" th:text="${c.motivo}">Motivo</span>
+                    <span th:if="${c.motivo == null}">Cita</span>
+                    <span class="text-muted" style="margin-left: 8px;" th:if="${c.estado != null}"
+                        th:text="${c.estado.literal}">ESTADO</span>
                 </li>
                 <li class="list-group-item" th:if="${#lists.isEmpty(citasHoy)}">No hay citas hoy</li>
             </ul>

@@ -9,24 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
-        }
-
-        header {
-            background-color: #0d6efd;
-            color: white;
-            padding: 15px;
-        }
-
-        nav a,
-        nav form button {
-            color: white;
-            margin-right: 15px;
-            text-decoration: none;
-        }
-
-        nav form {
-            display: inline;
+            background-color: #f0f0f0;
         }
 
         .table th {
@@ -34,15 +17,10 @@
             color: white;
         }
 
-        .table td {
-            vertical-align: middle;
-        }
-
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 10px;
-            color: #6c757d;
+            margin-top: 30px;
+            padding: 15px;
         }
     </style>
 </head>
@@ -57,39 +35,37 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mainNavbar">
-                <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                        <li class="nav-item"><a class="nav-link" th:href="@{/inicio}">
-                                <i class="fas fa-home"></i> Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}">
-                                <i class="fas fa-user-injured"></i> Pacientes</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}">
-                                <i class="fas fa-users"></i> Usuarios</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}">
-                                <i class="fas fa-laptop-file"></i> Informes</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}">
-                                <i class="fas fa-building"></i> Negocios</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}">
-                                <i class="fas fa-calendar-days"></i> Calendario</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}">
-                                <i class="fas fa-download"></i> Exportar</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}">
-                                <i class="fas fa-envelope"></i> Correo</a></li>
-                    </ul>
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}">
+                            <i class="fas fa-home"></i> Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}">
+                            <i class="fas fa-user-injured"></i> Pacientes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}">
+                            <i class="fas fa-users"></i> Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}">
+                            <i class="fas fa-laptop-file"></i> Informes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}">
+                            <i class="fas fa-building"></i> Negocios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}">
+                            <i class="fas fa-calendar-days"></i> Calendario</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}">
+                            <i class="fas fa-download"></i> Exportar</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}">
+                            <i class="fas fa-envelope"></i> Correo</a></li>
+                </ul>
 
-                    <div class="d-flex align-items-center text-white me-3">
-                        <i class="fas fa-user-circle fa-lg me-2"></i>
-                        <div class="d-flex flex-column">
-                            <small class="text-white-50">Usuario activo</small>
-                            <strong th:text="${usuarioActivo}">usuario</strong>
-                        </div>
+                <div class="d-flex align-items-center text-white me-3">
+                    <i class="fas fa-user-circle fa-lg me-2"></i>
+                    <div class="d-flex flex-column">
+                        <small class="text-white-50">Usuario activo</small>
+                        <strong th:text="${usuarioActivo}">usuario</strong>
                     </div>
-
-                    <form class="d-flex align-items-center me-3" th:action="@{/logout}" method="post">
-                        <button class="btn btn-sm btn-outline-light" type="submit">
-                            <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
-                    </form>
                 </div>
+
+                <form class="d-flex align-items-center me-3" th:action="@{/logout}" method="post">
+                    <button class="btn btn-sm btn-outline-light" type="submit">
+                        <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
+                </form>
             </div>
     </nav>
 
@@ -121,18 +97,18 @@
                     <td th:text="${usuario.id}"></td>
                     <td th:text="${usuario.nombre}"></td>
                     <td th:text="${usuario.email}"></td>
-                    <td th:text="${usuario.rolUsuario != null ? usuario.rolUsuario.literal : '-'}"></td>
-                    <td th:text="${usuario.negocioId != null ? usuario.negocioId : '-'}"></td>
-                    <td th:text="${#temporals.format(usuario.fechaCreacion, 'dd/MM/yyyy')}"></td>
-                    <td th:text="${#temporals.format(usuario.fechaModificacion, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${usuario.rolUsuario.literal}"></td>
+                    <td th:text="${usuario.negocioId}"></td>
+                    <td th:text="${usuario.fechaCreacion}"></td>
+                    <td th:text="${usuario.fechaModificacion}"></td>
                     <td class="text-center">
-                        <a th:href="@{'/usuario/ver/' + ${usuario.id}}" class="btn btn-sm btn-success me-1">
+                        <a th:href="@{'/usuario/ver/' + ${usuario.id}}" class="btn btn-sm btn-info me-1">
                             <i class="fas fa-eye"></i> Ver
                         </a>
-                        <a th:href="@{'/usuario/editar/' + ${usuario.id}}" class="btn btn-sm btn-outline-primary me-1">
+                        <a th:href="@{'/usuario/editar/' + ${usuario.id}}" class="btn btn-sm btn-primary me-1">
                             <i class="fas fa-edit"></i> Editar
                         </a>
-                        <a th:href="@{'/usuario/eliminar/' + ${usuario.id}}" class="btn btn-sm btn-outline-danger">
+                        <a th:href="@{'/usuario/eliminar/' + ${usuario.id}}" class="btn btn-sm btn-danger">
                             <i class="fas fa-trash-alt"></i> Eliminar
                         </a>
                     </td>
@@ -142,7 +118,6 @@
     </main>
 
     <footer>
-        <hr />
         <p>&copy; 2025 SaludConecta</p>
     </footer>
 

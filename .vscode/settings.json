@@ -18,7 +18,7 @@
         80,
         120
     ],
-    // Ajusta líneas largas automáticamente 
+    // Ajusta líneas largas automáticamente
     "editor.wordWrap": "on",
     // Edición sincronizada de etiquetas HTML
     "editor.linkedEditing": true,

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,47 +9,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f0f0f0;
         }
-        header {
-            background-color: #0d6efd;
-            color: white;
-            padding: 15px;
-        }
-        nav a, nav form button {
-            color: white;
-            margin-right: 15px;
-            text-decoration: none;
-        }
-        nav form {
-            display: inline;
-        }
+
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 10px;
-            color: #6c757d;
+            margin-top: 30px;
+            padding: 15px;
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand ms-3" th:href="@{/inicio}"><i class="fas fa-clinic-medical me-2"></i>SaludConecta</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}"><i class="fas fa-home"></i> Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}"><i class="fas fa-user-injured"></i> Pacientes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}"><i class="fas fa-users"></i> Usuarios</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}"><i class="fas fa-laptop-file"></i> Informes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}"><i class="fas fa-building"></i> Negocios</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}"><i class="fas fa-calendar-days"></i> Calendario</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}"><i class="fas fa-download"></i> Exportar</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}"><i class="fas fa-envelope"></i> Correo</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}">
+                            <i class="fas fa-home"></i> Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}">
+                            <i class="fas fa-user-injured"></i> Pacientes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}">
+                            <i class="fas fa-users"></i> Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}">
+                            <i class="fas fa-laptop-file"></i> Informes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}">
+                            <i class="fas fa-building"></i> Negocios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}">
+                            <i class="fas fa-calendar-days"></i> Calendario</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}">
+                            <i class="fas fa-download"></i> Exportar</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}">
+                            <i class="fas fa-envelope"></i> Correo</a></li>
                 </ul>
 
                 <div class="d-flex align-items-center text-white me-3">
@@ -60,7 +58,8 @@
                 </div>
 
                 <form class="d-flex align-items-center me-3" th:action="@{/logout}" method="post">
-                    <button class="btn btn-sm btn-outline-light" type="submit"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+                    <button class="btn btn-sm btn-outline-light" type="submit">
+                        <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
                 </form>
             </div>
         </div>
@@ -71,47 +70,42 @@
             <i class="fas fa-file-lines me-2"></i>Nuevo Informe
         </h2>
 
-        <form th:action="@{/informe/crear}"
-            th:object="${informe}"
-            method="post"
-            class="mx-auto"
+        <form th:action="@{/informe/crear}" th:object="${informe}" method="post" class="mx-auto"
             style="max-width: 800px;">
-            <!-- id no es necesario al crear (se asigna en la BD) -->
-            
             <div class="row">
-                <!-- Usuario asociado -->
                 <div class="col-md-6 mb-3">
                     <label for="usuarioId" class="form-label">Usuario (ID)</label>
                     <input type="number" th:field="*{usuarioId}" id="usuarioId" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="nombreUsuario" class="form-label">Nombre de usuario</label>
-                    <input id="nombreUsuario" type="text" th:field="*{nombreUsuario}" class="form-control" maxlength="50" required />
-                    <div th:if="${#fields.hasErrors('nombreUsuario')}" th:errors="*{nombreUsuario}" class="text-danger"></div>
+                    <input id="nombreUsuario" type="text" th:field="*{nombreUsuario}" class="form-control"
+                        maxlength="50" required />
+                    <div th:if="${#fields.hasErrors('nombreUsuario')}" th:errors="*{nombreUsuario}" class="text-danger">
+                    </div>
                 </div>
             </div>
 
             <div class="row">
-                <!-- Paciente asociado -->
                 <div class="col-md-6 mb-3">
                     <label for="pacienteId" class="form-label">Paciente (ID)</label>
                     <input type="number" th:field="*{pacienteId}" id="pacienteId" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="nombrePaciente" class="form-label">Nombre del paciente</label>
-                    <input id="nombrePaciente" type="text" th:field="*{nombrePaciente}" class="form-control" maxlength="50" required />
-                    <div th:if="${#fields.hasErrors('nombrePaciente')}" th:errors="*{nombrePaciente}" class="text-danger"></div>
+                    <input id="nombrePaciente" type="text" th:field="*{nombrePaciente}" class="form-control"
+                        maxlength="50" required />
+                    <div th:if="${#fields.hasErrors('nombrePaciente')}" th:errors="*{nombrePaciente}"
+                        class="text-danger"></div>
                 </div>
             </div>
 
-            <!-- Contenido del informe -->
             <div class="mb-3">
                 <label for="contenido" class="form-label">Contenido del informe</label>
                 <textarea id="contenido" th:field="*{contenido}" class="form-control" rows="8"></textarea>
                 <div th:if="${#fields.hasErrors('contenido')}" th:errors="*{contenido}" class="text-danger"></div>
             </div>
 
-            <!-- Para la creación no mostramos fechas editables -->
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-success me-2">
                     <i class="fas fa-check"></i> Crear Informe
@@ -124,10 +118,10 @@
     </main>
 
     <footer>
-        <hr/>
         <p>&copy; 2025 SaludConecta</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

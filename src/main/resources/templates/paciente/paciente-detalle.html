@@ -113,13 +113,13 @@
 							<td th:text="${informe.nombreUsuario}"></td>
 							<td th:text="${#temporals.format(informe.fechaCreacion, 'dd/MM/yyyy')}"></td>
 							<td class="text-center">
-								<a th:href="@{'/informes/ver/' + ${informe.id}}" class="btn btn-sm btn-info me-1">
+								<a th:href="@{'/informe/ver/' + ${informe.id}}" class="btn btn-sm btn-info me-1">
 									<i class="fas fa-eye"></i> Ver
 								</a>
-								<a th:href="@{'/informes/editar/' + ${informe.id}}" class="btn btn-sm btn-primary me-1">
+								<a th:href="@{'/informe/editar/' + ${informe.id}}" class="btn btn-sm btn-primary me-1">
 									<i class="fas fa-edit"></i> Editar
 								</a>
-								<a th:href="@{'/informes/eliminar/' + ${informe.id}}" class="btn btn-sm btn-danger">
+								<a th:href="@{'/informe/eliminar/' + ${informe.id}}" class="btn btn-sm btn-danger">
 									<i class="fas fa-trash-alt"></i> Eliminar
 								</a>
 							</td>

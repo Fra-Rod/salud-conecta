@@ -74,29 +74,25 @@
             style="max-width: 800px;">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="usuarioId" class="form-label">Usuario (ID)</label>
-                    <input type="number" th:field="*{usuarioId}" id="usuarioId" class="form-control" />
+                    <label for="usuarioId" class="form-label">Usuario</label>
+                    <select th:field="*{usuarioId}" id="usuarioId" class="form-select" required
+                        onchange="document.getElementById('nombreUsuario').value = this.options[this.selectedIndex].text;">
+                        <option value="">Seleccionar usuario...</option>
+                        <option th:each="usuario : ${usuarios}" th:value="${usuario.id}" th:text="${usuario.nombre}">
+                        </option>
+                    </select>
+                    <input type="hidden" th:field="*{nombreUsuario}" id="nombreUsuario" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="nombreUsuario" class="form-label">Nombre de usuario</label>
-                    <input id="nombreUsuario" type="text" th:field="*{nombreUsuario}" class="form-control"
-                        maxlength="50" required />
-                    <div th:if="${#fields.hasErrors('nombreUsuario')}" th:errors="*{nombreUsuario}" class="text-danger">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="pacienteId" class="form-label">Paciente (ID)</label>
-                    <input type="number" th:field="*{pacienteId}" id="pacienteId" class="form-control" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="nombrePaciente" class="form-label">Nombre del paciente</label>
-                    <input id="nombrePaciente" type="text" th:field="*{nombrePaciente}" class="form-control"
-                        maxlength="50" required />
-                    <div th:if="${#fields.hasErrors('nombrePaciente')}" th:errors="*{nombrePaciente}"
-                        class="text-danger"></div>
+                    <label for="pacienteId" class="form-label">Paciente</label>
+                    <select th:field="*{pacienteId}" id="pacienteId" class="form-select" required
+                        onchange="document.getElementById('nombrePaciente').value = this.options[this.selectedIndex].text;">
+                        <option value="">Seleccionar paciente...</option>
+                        <option th:each="paciente : ${pacientes}" th:value="${paciente.id}"
+                            th:text="${paciente.nombre}">
+                        </option>
+                    </select>
+                    <input type="hidden" th:field="*{nombrePaciente}" id="nombrePaciente" />
                 </div>
             </div>
 

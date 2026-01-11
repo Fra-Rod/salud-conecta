@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,12 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f0f0f0;
         }
+
         .profile-avatar {
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #0d6efd;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -21,45 +23,55 @@
             font-size: 3rem;
             color: white;
         }
-        .stat-card {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
+
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 10px;
-            color: #6c757d;
+            margin-top: 30px;
+            padding: 15px;
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand ms-3" th:href="@{/inicio}"><i class="fas fa-clinic-medical me-2"></i>SaludConecta</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}"><i class="fas fa-home"></i> Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}"><i class="fas fa-user-injured"></i> Pacientes</a></li>
-                    <li class="nav-item"><a class="nav-link active" th:href="@{/usuario-lista}"><i class="fas fa-users"></i> Usuarios</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}"><i class="fas fa-laptop-file"></i> Informes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}"><i class="fas fa-building"></i> Negocios</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}"><i class="fas fa-calendar-days"></i> Calendario</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}"><i class="fas fa-download"></i> Exportar</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}"><i class="fas fa-envelope"></i> Correo</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}">
+                            <i class="fas fa-home"></i> Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}">
+                            <i class="fas fa-user-injured"></i> Pacientes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}">
+                            <i class="fas fa-users"></i> Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}">
+                            <i class="fas fa-laptop-file"></i> Informes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}">
+                            <i class="fas fa-building"></i> Negocios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}">
+                            <i class="fas fa-calendar-days"></i> Calendario</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}">
+                            <i class="fas fa-download"></i> Exportar</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}">
+                            <i class="fas fa-envelope"></i> Correo</a></li>
                 </ul>
+
                 <div class="d-flex align-items-center text-white me-3">
                     <i class="fas fa-user-circle fa-lg me-2"></i>
                     <div class="d-flex flex-column">
                         <small class="text-white-50">Usuario activo</small>
-                        <strong th:text="${usuario != null ? usuario.nombre : 'Usuario'}">usuario</strong>
+                        <strong th:text="${usuario.nombre}">usuario</strong>
                     </div>
                 </div>
+
                 <form class="d-flex align-items-center me-3" th:action="@{/logout}" method="post">
-                    <button class="btn btn-sm btn-outline-light" type="submit"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+                    <button class="btn btn-sm btn-outline-light" type="submit">
+                        <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
                 </form>
             </div>
         </div>
@@ -74,20 +86,20 @@
                             <i class="fas fa-user"></i>
                         </div>
                     </div>
-                    <h3 class="h5 mb-0" th:text="${usuario != null ? usuario.nombre : 'Usuario'}">Nombre Usuario</h3>
-                    <p class="text-muted mb-2" th:text="${usuario != null and usuario.rolUsuario != null ? usuario.rolUsuario.literal : 'Rol'}">Rol</p>
+                    <h3 class="h5 mb-0" th:text="${usuario.nombre}">Nombre Usuario</h3>
+                    <p class="text-muted mb-2" th:text="${usuario.rolUsuario.literal}">Rol</p>
                     <div class="mb-3">
-                        <small class="d-block text-muted" th:text="${usuario != null ? usuario.email : 'email@ejemplo.com'}">usuario@ejemplo.com</small>
-                        <small class="d-block text-muted" th:text="${nombreNegocio != null ? nombreNegocio : 'Centro de trabajo'}">Centro de trabajo</small>
+                        <small class="d-block text-muted" th:text="${usuario.email}">usuario@ejemplo.com</small>
+                        <small class="d-block text-muted" th:text="${nombreNegocio}">Centro de trabajo</small>
                     </div>
                     <div class="d-grid gap-2 mb-3">
-                        <a th:href="@{'/usuario/editar/' + ${usuario != null ? usuario.id : 0}}" class="btn btn-sm btn-primary">
+                        <a th:href="@{'/usuario/editar/' + ${usuario.id}}" class="btn btn-sm btn-primary">
                             <i class="fas fa-pen me-1"></i> Editar perfil
                         </a>
-                        <a th:href="@{/calendario-vista}" class="btn btn-sm btn-outline-secondary">
+                        <a th:href="@{/calendario-vista}" class="btn btn-sm btn-secondary">
                             <i class="fas fa-calendar-check me-1"></i> Mis citas
                         </a>
-                        <a th:href="@{/usuario-lista}" class="btn btn-sm btn-outline-secondary">
+                        <a th:href="@{/usuario-lista}" class="btn btn-sm btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Volver a lista
                         </a>
                     </div>
@@ -97,7 +109,7 @@
                     <h6 class="mb-3"><i class="fas fa-info-circle me-2"></i>Información</h6>
                     <div class="mb-2">
                         <small class="text-muted">ID de Usuario</small>
-                        <div th:text="${usuario != null ? usuario.id : '-'}">-</div>
+                        <div th:text="${usuario.id}">-</div>
                     </div>
                 </div>
             </div>
@@ -112,7 +124,7 @@
                         <a th:href="@{/cita/crear}" class="btn btn-sm btn-success">
                             <i class="fas fa-calendar-plus me-1"></i> Nueva cita
                         </a>
-                        <a th:href="@{/paciente/crear}" class="btn btn-sm btn-outline-primary">
+                        <a th:href="@{/paciente/crear}" class="btn btn-sm btn-primary">
                             <i class="fas fa-user-plus me-1"></i> Nuevo paciente
                         </a>
                     </div>
@@ -123,7 +135,7 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <a th:href="@{/calendario-vista}" class="text-decoration-none">
-                                <div class="p-3 text-center stat-card">
+                                <div class="p-3 text-center bg-light">
                                     <i class="fas fa-calendar-alt fa-2x text-primary mb-2"></i>
                                     <div class="small">Ver Calendario</div>
                                 </div>
@@ -131,7 +143,7 @@
                         </div>
                         <div class="col-md-4">
                             <a th:href="@{/paciente-lista}" class="text-decoration-none">
-                                <div class="p-3 text-center stat-card">
+                                <div class="p-3 text-center bg-light">
                                     <i class="fas fa-user-injured fa-2x text-success mb-2"></i>
                                     <div class="small">Mis Pacientes</div>
                                 </div>
@@ -139,7 +151,7 @@
                         </div>
                         <div class="col-md-4">
                             <a th:href="@{/informe-lista}" class="text-decoration-none">
-                                <div class="p-3 text-center stat-card">
+                                <div class="p-3 text-center bg-light">
                                     <i class="fas fa-file-medical fa-2x text-info mb-2"></i>
                                     <div class="small">Mis Informes</div>
                                 </div>
@@ -147,7 +159,7 @@
                         </div>
                         <div class="col-md-4">
                             <a th:href="@{/cita/crear}" class="text-decoration-none">
-                                <div class="p-3 text-center stat-card">
+                                <div class="p-3 text-center bg-light">
                                     <i class="fas fa-calendar-plus fa-2x text-success mb-2"></i>
                                     <div class="small">Crear Cita</div>
                                 </div>
@@ -155,7 +167,7 @@
                         </div>
                         <div class="col-md-4">
                             <a th:href="@{/cita/buscar}" class="text-decoration-none">
-                                <div class="p-3 text-center stat-card">
+                                <div class="p-3 text-center bg-light">
                                     <i class="fas fa-search fa-2x text-warning mb-2"></i>
                                     <div class="small">Buscar Citas</div>
                                 </div>
@@ -163,7 +175,7 @@
                         </div>
                         <div class="col-md-4">
                             <a th:href="@{/exports/excel}" class="text-decoration-none">
-                                <div class="p-3 text-center stat-card">
+                                <div class="p-3 text-center bg-light">
                                     <i class="fas fa-download fa-2x text-secondary mb-2"></i>
                                     <div class="small">Exportar Datos</div>
                                 </div>
@@ -177,19 +189,19 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <strong>Nombre:</strong>
-                            <div th:text="${usuario != null ? usuario.nombre : '-'}">-</div>
+                            <div th:text="${usuario.nombre}">-</div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <strong>Email:</strong>
-                            <div th:text="${usuario != null ? usuario.email : '-'}">-</div>
+                            <div th:text="${usuario.email}">-</div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <strong>Rol:</strong>
-                            <div th:text="${usuario != null and usuario.rolUsuario != null ? usuario.rolUsuario.literal : '-'}">-</div>
+                            <div th:text="${usuario.rolUsuario.literal}">-</div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <strong>Centro:</strong>
-                            <div th:text="${nombreNegocio != null ? nombreNegocio : '-'}">-</div>
+                            <div th:text="${nombreNegocio}">-</div>
                         </div>
                     </div>
                 </div>
@@ -198,10 +210,10 @@
     </main>
 
     <footer>
-        <hr/>
         <p>&copy; 2025 SaludConecta</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

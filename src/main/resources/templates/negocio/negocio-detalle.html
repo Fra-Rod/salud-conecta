@@ -1,54 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Ver Negocio - SaludConecta</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ver Negocio - SaludConecta</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f0f0f0;
         }
-        header {
-            background-color: #0d6efd;
-            color: white;
-            padding: 15px;
-        }
-        nav a, nav form button {
-            color: white;
-            margin-right: 15px;
-            text-decoration: none;
-        }
-        nav form {
-            display: inline;
-        }
+
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 10px;
-            color: #6c757d;
+            margin-top: 30px;
+            padding: 15px;
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand ms-3" th:href="@{/inicio}"><i class="fas fa-clinic-medical me-2"></i>SaludConecta</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}"><i class="fas fa-home"></i> Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}"><i class="fas fa-user-injured"></i> Pacientes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}"><i class="fas fa-users"></i> Usuarios</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}"><i class="fas fa-laptop-file"></i> Informes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}"><i class="fas fa-building"></i> Negocios</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}"><i class="fas fa-calendar-days"></i> Calendario</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}"><i class="fas fa-download"></i> Exportar</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}"><i class="fas fa-envelope"></i> Correo</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/inicio}">
+                            <i class="fas fa-home"></i> Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/paciente-lista}">
+                            <i class="fas fa-user-injured"></i> Pacientes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario-lista}">
+                            <i class="fas fa-users"></i> Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/informe-lista}">
+                            <i class="fas fa-laptop-file"></i> Informes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/negocio-lista}">
+                            <i class="fas fa-building"></i> Negocios</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/calendario-vista}">
+                            <i class="fas fa-calendar-days"></i> Calendario</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/excel}">
+                            <i class="fas fa-download"></i> Exportar</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/exports/email}">
+                            <i class="fas fa-envelope"></i> Correo</a></li>
                 </ul>
 
                 <div class="d-flex align-items-center text-white me-3">
@@ -60,37 +58,89 @@
                 </div>
 
                 <form class="d-flex align-items-center me-3" th:action="@{/logout}" method="post">
-                    <button class="btn btn-sm btn-outline-light" type="submit"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+                    <button class="btn btn-sm btn-outline-light" type="submit">
+                        <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
                 </form>
             </div>
         </div>
     </nav>
 
-	<main class="container mt-5">
-		<div class="card shadow-sm mx-auto" style="max-width: 750px;">
-			<div class="card-header bg-primary text-white">
-				<h4 class="mb-0">
-					<i class="fas fa-building me-2"></i>Ficha del Negocio
-				</h4>
-			</div>
+    <main class="container mt-5">
+        <div class="card shadow-sm mx-auto" style="max-width: 750px;">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-building me-2"></i>Ficha del Negocio
+                </h4>
+            </div>
 
             <div class="card-body">
-                <h5 class="card-title" th:text="${negocio.nombre}">Nombre del Negocio</h5>
-                <p class="card-text"><strong>Dirección:</strong> <span th:text="${negocio.direccion}">Calle Falsa 123</span></p>
-                <p class="card-text"><strong>Teléfono:</strong> <span th:text="${negocio.telefono}">+34 600 000 000</span></p>
+                <p><strong>ID:</strong> <span th:text="${negocio.id}">1</span></p>
+                <p><strong>Nombre:</strong> <span th:text="${negocio.nombre}">Nombre del Negocio</span></p>
+                <p><strong>Dirección:</strong> <span th:text="${negocio.direccion}">Calle Falsa 123</span></p>
+                <p><strong>Teléfono:</strong> <span th:text="${negocio.telefono}">+34 600 000 000</span></p>
+            </div>
 
-			<div class="alert alert-info mt-3">
-                <!-- th:if="${usuario.pacientes == null or usuario.pacientes.isEmpty()}"  -->
-				<i class="fas fa-info-circle me-2"></i>Este negocio no tiene usuarios asignados.
-			</div>
-		</div>
-	</main>
+            <div class="card-footer text-end">
+                <a th:href="@{/negocio-lista}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al listado
+                </a>
+                <a th:href="@{'/negocio/editar/' + ${negocio.id}}" class="btn btn-primary ms-2">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            </div>
+        </div>
 
-	<footer>
-        <hr/>
+        <div class="mt-5">
+            <h5 class="text-primary">
+                <i class="fas fa-users me-2"></i>Usuarios Asociados
+            </h5>
+
+            <div th:if="${negocio.usuarios != null and !negocio.usuarios.isEmpty()}">
+                <table class="table table-bordered table-hover table-striped mt-3">
+                    <thead class="text-center">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Fecha de alta</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuario : ${negocio.usuarios}">
+                            <td th:text="${usuario.id}"></td>
+                            <td th:text="${usuario.nombre}"></td>
+                            <td th:text="${usuario.email}"></td>
+                            <td th:text="${usuario.rolUsuario}"></td>
+                            <td th:text="${usuario.fechaCreacion}"></td>
+                            <td class="text-center">
+                                <a th:href="@{'/usuario/ver/' + ${usuario.id}}" class="btn btn-sm btn-info me-1">
+                                    <i class="fas fa-eye"></i> Ver
+                                </a>
+                                <a th:href="@{'/usuario/editar/' + ${usuario.id}}" class="btn btn-sm btn-primary me-1">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a th:href="@{'/usuario/eliminar/' + ${usuario.id}}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${negocio.usuarios == null or negocio.usuarios.isEmpty()}" class="alert alert-info mt-3">
+                <i class="fas fa-info-circle me-2"></i>Este negocio no tiene usuarios asignados.
+            </div>
+        </div>
+    </main>
+
+    <footer>
         <p>&copy; 2025 SaludConecta</p>
     </footer>
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

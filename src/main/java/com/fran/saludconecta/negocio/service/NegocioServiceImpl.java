@@ -10,10 +10,11 @@ import com.fran.saludconecta.jooq.tables.records.NegocioRecord;
 import com.fran.saludconecta.negocio.dto.NegocioDTO;
 import com.fran.saludconecta.negocio.mapper.NegocioMapper;
 import com.fran.saludconecta.negocio.repository.NegocioRepository;
+import com.fran.saludconecta.usuario.mapper.UsuarioMapper;
 
 @Service
 public class NegocioServiceImpl implements INegocioService {
-@Autowired
+    @Autowired
     private DSLContext dsl;
 
     @Autowired
@@ -26,7 +27,14 @@ public class NegocioServiceImpl implements INegocioService {
 
     @Override
     public NegocioDTO mostrarPorId(Integer id) {
-        return NegocioMapper.toDTO(repository.obtenerPorId(id));
+        NegocioDTO dto = NegocioMapper.toDTO(repository.obtenerPorId(id));
+        if (dto != null) {
+            dto.setUsuarios(repository.obtenerUsuariosPorNegocio(id)
+                    .stream()
+                    .map(UsuarioMapper::toDTO)
+                    .toList());
+        }
+        return dto;
     }
 
     @Override
@@ -34,7 +42,6 @@ public class NegocioServiceImpl implements INegocioService {
         NegocioRecord guardarRecord = NegocioMapper.fromDTO(dto, dsl);
         NegocioRecord comprobarRecord = repository.obtenerPorId(guardarRecord.getId());
         NegocioRecord comprobarRecordPorNombre = repository.obtenerPorNombre(guardarRecord.getNombre());
-
 
         if (comprobarRecord == null && comprobarRecordPorNombre == null) {
             repository.guardar(guardarRecord);

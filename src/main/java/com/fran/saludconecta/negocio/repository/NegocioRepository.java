@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.fran.saludconecta.jooq.tables.Negocio;
+import com.fran.saludconecta.jooq.tables.Usuario;
 import com.fran.saludconecta.jooq.tables.records.NegocioRecord;
+import com.fran.saludconecta.jooq.tables.records.UsuarioRecord;
 import com.fran.saludconecta.negocio.dto.NegocioDTO;
 
 @Repository
@@ -22,18 +24,25 @@ public class NegocioRepository {
 
     public NegocioRecord obtenerPorId(Integer id) {
         return dsl.selectFrom(Negocio.NEGOCIO)
-                  .where(Negocio.NEGOCIO.ID.eq(id))
-                  .fetchOne();
+                .where(Negocio.NEGOCIO.ID.eq(id))
+                .fetchOne();
     }
 
     public NegocioRecord obtenerPorNombre(String nombre) {
         return dsl.selectFrom(Negocio.NEGOCIO)
-                  .where(Negocio.NEGOCIO.NOMBRE.eq(nombre))
-                  .fetchOne();
+                .where(Negocio.NEGOCIO.NOMBRE.eq(nombre))
+                .fetchOne();
     }
-    
+
+    public List<UsuarioRecord> obtenerUsuariosPorNegocio(Integer negocioId) {
+        return dsl.selectFrom(Usuario.USUARIO)
+                .where(Usuario.USUARIO.NEGOCIO_ID.eq(negocioId))
+                .orderBy(Usuario.USUARIO.NOMBRE)
+                .fetch();
+    }
+
     public NegocioRecord guardar(NegocioRecord guardarRecord) {
-    	NegocioRecord record = dsl.newRecord(Negocio.NEGOCIO);
+        NegocioRecord record = dsl.newRecord(Negocio.NEGOCIO);
         record = guardarRecord;
         record.store();
         return record;

@@ -1,6 +1,9 @@
 package com.fran.saludconecta.negocio.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fran.saludconecta.usuario.dto.UsuarioDTO;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -30,4 +33,6 @@ public class NegocioDTO {
 
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaModificacion;
+
+    private List<UsuarioDTO> usuarios;
 }

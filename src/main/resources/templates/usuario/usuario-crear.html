@@ -101,8 +101,12 @@
             </div>
 
             <div class="mb-3">
-                <label for="negocioId" class="form-label">Negocio (ID)</label>
-                <input type="number" th:field="*{negocioId}" id="negocioId" class="form-control" />
+                <label for="negocioId" class="form-label">Negocio</label>
+                <select th:field="*{negocioId}" id="negocioId" class="form-select">
+                    <option value="">-- Seleccione un negocio (opcional) --</option>
+                    <option th:each="negocio : ${negocios}" th:value="${negocio.id}" th:text="${negocio.nombre}">Negocio
+                    </option>
+                </select>
             </div>
 
             <div class="text-center mt-4">

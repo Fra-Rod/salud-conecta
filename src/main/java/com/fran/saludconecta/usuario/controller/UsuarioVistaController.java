@@ -29,12 +29,13 @@ public class UsuarioVistaController {
 
     @GetMapping("/usuario-perfil/{id}")
     public String mostrarPerfil(Principal principal, @PathVariable Integer id, Model model) {
-       
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
-        // Intenta obtener el DTO completo del usuario activo para mostrar más detalles en el perfil
+        // Intenta obtener el DTO completo del usuario activo para mostrar más detalles
+        // en el perfil
         UsuarioDTO usuarioDto = null;
         try {
             usuarioDto = service.mostrarTodos().stream()
@@ -47,7 +48,17 @@ public class UsuarioVistaController {
         model.addAttribute("usuario", usuarioDto);
 
         // Añade atributos específicos para el perfil
-        String nombreNegocio = negocioService.mostrarPorId(usuarioDto.getNegocioId()).getNombre();
+        String nombreNegocio = "Sin Negocio";
+        if (usuarioDto != null && usuarioDto.getNegocioId() != null) {
+            try {
+                var negocio = negocioService.mostrarPorId(usuarioDto.getNegocioId());
+                if (negocio != null) {
+                    nombreNegocio = negocio.getNombre();
+                }
+            } catch (Exception e) {
+                nombreNegocio = "Sin Negocio";
+            }
+        }
         model.addAttribute("nombreNegocio", nombreNegocio);
 
         return "usuario/usuario-perfil";
@@ -55,9 +66,9 @@ public class UsuarioVistaController {
 
     @GetMapping("/usuario-lista")
     public String mostrarLista(Principal principal, Model model) {
-        
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
         List<UsuarioDTO> lista = service.mostrarTodos();
@@ -65,38 +76,41 @@ public class UsuarioVistaController {
         return "usuario/usuario-lista";
     }
 
-    @GetMapping("/usuario/ver/{id}") 
+    @GetMapping("/usuario/ver/{id}")
     public String mostrarDetalle(Principal principal, @PathVariable Integer id, Model model) {
-        
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
-    	UsuarioDTO dto = service.mostrarDetallesPorId(id);
-		model.addAttribute("usuario", dto); 
-        return "usuario/usuario-detalle"; 
+        UsuarioDTO dto = service.mostrarDetallesPorId(id);
+        model.addAttribute("usuario", dto);
+        return "usuario/usuario-detalle";
     }
 
     @GetMapping("/usuario/crear")
     public String mostrarFormularioCreacion(Principal principal, Model model) {
-        
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
         model.addAttribute("usuario", new UsuarioDTO());
+        model.addAttribute("negocios", negocioService.mostrarTodos());
         return "usuario/usuario-crear";
     }
 
     @PostMapping("/usuario/crear")
-    public String procesarCreacion(Principal principal, @Valid @ModelAttribute("usuario") UsuarioDTO dto, BindingResult result, Model model) {
-        
+    public String procesarCreacion(Principal principal, @Valid @ModelAttribute("usuario") UsuarioDTO dto,
+            BindingResult result, Model model) {
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
         // Si hay errores de validación estándar (NotBlank, Size, ...)
         if (result.hasErrors()) {
+            model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-crear"; // vuelve a mostrar el formulario con errores
         }
 
@@ -106,6 +120,7 @@ public class UsuarioVistaController {
         if (!creado) {
             // Asumiendo que la comprobación está basada en email:
             result.rejectValue("email", "error.email", "Ya existe un usuario con ese email");
+            model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-crear";
         }
 
@@ -115,30 +130,33 @@ public class UsuarioVistaController {
 
     @GetMapping("/usuario/editar/{id}")
     public String mostrarFormularioEdicion(Principal principal, @PathVariable Integer id, Model model) {
-        
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
         UsuarioDTO dto = service.mostrarPorId(id);
         if (dto != null) {
             model.addAttribute("usuario", dto);
+            model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-editar";
 
         } else {
             return "redirect:/usuario-lista";
         }
     }
-    
+
     @PostMapping("/usuario/editar/{id}")
-    public String procesarEdicion(Principal principal, @PathVariable Integer id, @Valid @ModelAttribute("usuario") UsuarioDTO dto, BindingResult result, Model model) {
-        
+    public String procesarEdicion(Principal principal, @PathVariable Integer id,
+            @Valid @ModelAttribute("usuario") UsuarioDTO dto, BindingResult result, Model model) {
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
         // Si hay errores de validación estándar (NotBlank, Size, ...)
         if (result.hasErrors()) {
+            model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-editar"; // vuelve a mostrar el formulario con errores
         }
 
@@ -148,6 +166,7 @@ public class UsuarioVistaController {
         if (!creado) {
             // Asumiendo que la comprobación está basada en email:
             result.rejectValue("email", "error.email", "Ya existe un usuario con ese email");
+            model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-editar";
         }
 
@@ -156,20 +175,20 @@ public class UsuarioVistaController {
         } catch (DataIntegrityViolationException ex) {
             // Podría ser DuplicateKeyException por UNIQUE(email)
             result.rejectValue("email", "error.email", "Ese email ya está en uso");
+            model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-editar";
         }
 
         return "redirect:/usuario-lista";
     }
-    
-    
+
     @GetMapping("/usuario/eliminar/{id}")
     public String mostrarConfirmacionEliminacion(Principal principal, @PathVariable Integer id, Model model) {
-        
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
-        
+
         UsuarioDTO dto = service.mostrarPorId(id);
         if (dto != null) {
             model.addAttribute("usuario", dto);
@@ -182,9 +201,9 @@ public class UsuarioVistaController {
 
     @PostMapping("/usuario/eliminar/{id}")
     public String procesarEliminacion(Principal principal, @PathVariable Integer id, Model model) {
-        
+
         // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName(); 
+        String usuarioActivo = principal.getName();
         model.addAttribute("usuarioActivo", usuarioActivo);
 
         service.borrar(id);

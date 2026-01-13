@@ -1,25 +1,33 @@
 package com.fran.saludconecta.export.service;
 
-import com.fran.saludconecta.paciente.dto.PacienteDTO;
-import com.fran.saludconecta.paciente.service.IPacienteService;
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import jakarta.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import com.fran.saludconecta.paciente.dto.PacienteDTO;
+import com.fran.saludconecta.paciente.service.IPacienteService;
+
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class ExportMailServiceImpl implements IExportMailService {
@@ -36,6 +44,7 @@ public class ExportMailServiceImpl implements IExportMailService {
 
     @Override
     public void enviarPacientesExcel(String destinatario) throws Exception {
+
         // Generar Excel en memoria
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try (Workbook workbook = new XSSFWorkbook()) {
@@ -47,7 +56,7 @@ public class ExportMailServiceImpl implements IExportMailService {
             headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
             headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             Row header = sheet.createRow(0);
-            String[] columnas = {"ID", "Nombre", "Apellidos", "DNI", "Teléfono", "Email", "Fecha Nacimiento", "Edad"};
+            String[] columnas = { "ID", "Nombre", "Apellidos", "DNI", "Teléfono", "Email", "Fecha Nacimiento", "Edad" };
             for (int i = 0; i < columnas.length; i++) {
                 Cell cell = header.createCell(i);
                 cell.setCellValue(columnas[i]);

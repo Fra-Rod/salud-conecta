@@ -117,13 +117,6 @@
             </form>
         </div>
 
-        <!-- Mensaje de éxito/error -->
-        <div th:if="${mensaje}" th:class="'alert alert-' + ${tipoMensaje} + ' alert-dismissible fade show'"
-            role="alert">
-            <span th:text="${mensaje}">Mensaje</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
         <!-- Listado de citas -->
         <div th:if="${citas != null && !citas.isEmpty()}">
             <h5 class="mb-3">

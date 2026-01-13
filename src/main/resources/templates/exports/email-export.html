@@ -67,14 +67,6 @@
     </nav>
 
     <main class="container mt-5">
-        <div th:if="${mensaje}" th:class="'alert alert-' + ${tipoMensaje}" role="alert">
-            <i class="fas fa-check-circle me-2" th:if="${tipoMensaje == 'success'}"></i>
-            <i class="fas fa-times-circle me-2" th:if="${tipoMensaje == 'danger'}"></i>
-            <i class="fas fa-exclamation-circle me-2"
-                th:if="${tipoMensaje != 'success' and tipoMensaje != 'danger'}"></i>
-            <span th:text="${mensaje}">Mensaje</span>
-        </div>
-
         <h2 class="text-center mb-4">
             <i class="fas fa-envelope me-2 text-primary"></i>Enviar por Email
         </h2>

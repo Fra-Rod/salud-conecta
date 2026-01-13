@@ -3,11 +3,9 @@ package com.fran.saludconecta.calendario.controller;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fran.saludconecta.cita.dto.CitaDTO;
 import com.fran.saludconecta.cita.service.ICitaService;
+import com.fran.saludconecta.usuario.dto.UsuarioDTO;
 import com.fran.saludconecta.usuario.service.IUsuarioService;
 
 @Controller
@@ -36,89 +35,100 @@ public class CalendarioVistaController {
             Principal principal,
             Model model) {
 
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
 
-        Integer usuarioId = null;
-        if (principal != null) {
-            var usuarioOpt = usuarioService.mostrarTodos().stream()
-                    .filter(u -> u.getNombre().equals(usuarioActivo))
-                    .findFirst();
+        UsuarioDTO usuarioDto = usuarioService.mostrarTodos().stream()
+                .filter(u -> principal.getName().equals(u.getNombre()))
+                .findFirst()
+                .orElse(null);
 
-            if (usuarioOpt.isPresent()) {
-                usuarioId = usuarioOpt.get().getId();
-            }
+        YearMonth yearMonth;
+        if (year != null && month != null) {
+            yearMonth = YearMonth.of(year, month);
+        } else {
+            yearMonth = YearMonth.now();
         }
 
-        // Mes y año: usa parámetros si existen, sino el mes actual
-        YearMonth ym = (year != null && month != null)
-                ? YearMonth.of(year, month)
-                : YearMonth.now();
+        int anyoActual = yearMonth.getYear();
+        int mesActual = yearMonth.getMonthValue();
 
-        int currentYear = ym.getYear();
-        int currentMonth = ym.getMonthValue();
-        String monthName = ym.getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+        String[] nombresMeses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+        String nombreMes = nombresMeses[mesActual - 1];
 
         // Construir grid del mes
-        int daysInMonth = ym.lengthOfMonth();
-        LocalDate firstOfMonth = ym.atDay(1);
-        int startIndex = firstOfMonth.getDayOfWeek().getValue() - 1;
+        int diasEnMes = yearMonth.lengthOfMonth();
+        LocalDate diaUnoMes = yearMonth.atDay(1);
+        int inicio = diaUnoMes.getDayOfWeek().getValue() - 1;
 
-        List<List<Integer>> monthGrid = new ArrayList<>();
-        List<Integer> week = new ArrayList<>();
-        for (int i = 0; i < startIndex; i++)
-            week.add(0);
+        List<List<Integer>> gridMes = new ArrayList<>();
+        List<Integer> semana = new ArrayList<>();
+        for (int i = 0; i < inicio; i++)
+            semana.add(0);
 
-        int day = 1;
-        while (day <= daysInMonth) {
-            week.add(day++);
-            if (week.size() == 7) {
-                monthGrid.add(week);
-                week = new ArrayList<>();
+        int dia = 1;
+        while (dia <= diasEnMes) {
+            semana.add(dia++);
+            if (semana.size() == 7) {
+                gridMes.add(semana);
+                semana = new ArrayList<>();
             }
         }
 
-        if (!week.isEmpty()) {
-            while (week.size() < 7)
-                week.add(0);
-            monthGrid.add(week);
+        if (!semana.isEmpty()) {
+            while (semana.size() < 7)
+                semana.add(0);
+            gridMes.add(semana);
         }
 
-        // Citas del mes
         List<CitaDTO> citasMes = new ArrayList<>();
-        if (usuarioId != null) {
-            citasMes = citaService.porUsuario(usuarioId).stream()
-                    .filter(c -> c.getFechaCita() != null
-                            && c.getFechaCita().getYear() == currentYear
-                            && c.getFechaCita().getMonthValue() == currentMonth)
-                    .toList();
+        if (usuarioDto != null && usuarioDto.getId() != null) {
+            List<CitaDTO> todasCitasUsuario = citaService.porUsuario(usuarioDto.getId());
+
+            for (CitaDTO cita : todasCitasUsuario) {
+                if (cita.getFechaCita() != null) {
+                    if (cita.getFechaCita().getYear() == anyoActual &&
+                            cita.getFechaCita().getMonthValue() == mesActual) {
+                        citasMes.add(cita);
+                    }
+                }
+            }
         }
 
-        // Map de citas por día
         Map<String, List<CitaDTO>> citasPorDia = new HashMap<>();
-        for (CitaDTO c : citasMes) {
-            int d = c.getFechaCita().getDayOfMonth();
-            String key = String.valueOf(d);
-            citasPorDia.computeIfAbsent(key, k -> new ArrayList<>()).add(c);
+        for (CitaDTO cita : citasMes) {
+            int numeroDia = cita.getFechaCita().getDayOfMonth();
+            String claveDia = String.valueOf(numeroDia);
+
+            if (!citasPorDia.containsKey(claveDia)) {
+                citasPorDia.put(claveDia, new ArrayList<>());
+            }
+            citasPorDia.get(claveDia).add(cita);
         }
 
-        // Calcular mes anterior y siguiente para navegación
-        YearMonth prevMonth = ym.minusMonths(1);
-        YearMonth nextMonth = ym.plusMonths(1);
+        YearMonth mesAnterior = yearMonth.minusMonths(1);
+        YearMonth mesSiguiente = yearMonth.plusMonths(1);
 
-        List<CitaDTO> proximas = usuarioId == null ? List.of() : citaService.proximasPorUsuario(usuarioId, 5);
-        List<CitaDTO> citasHoy = usuarioId == null ? List.of() : citaService.citasHoyPorUsuario(usuarioId);
+        List<CitaDTO> proximas = new ArrayList<>();
+        if (usuarioDto != null && usuarioDto.getId() != null) {
+            proximas = citaService.proximasPorUsuario(usuarioDto.getId(), 5);
+        }
 
-        model.addAttribute("monthGrid", monthGrid);
+        List<CitaDTO> citasHoy = new ArrayList<>();
+        if (usuarioDto != null && usuarioDto.getId() != null) {
+            citasHoy = citaService.citasHoyPorUsuario(usuarioDto.getId());
+        }
+
+        model.addAttribute("gridMes", gridMes);
         model.addAttribute("citasPorDia", citasPorDia);
-        model.addAttribute("monthName", monthName);
-        model.addAttribute("year", currentYear);
-        model.addAttribute("month", currentMonth);
-        model.addAttribute("prevYear", prevMonth.getYear());
-        model.addAttribute("prevMonth", prevMonth.getMonthValue());
-        model.addAttribute("nextYear", nextMonth.getYear());
-        model.addAttribute("nextMonth", nextMonth.getMonthValue());
-        model.addAttribute("proximasCitas", proximas.size());
+        model.addAttribute("nombreMes", nombreMes);
+        model.addAttribute("anyo", anyoActual);
+        model.addAttribute("mes", mesActual);
+        model.addAttribute("anyoAnterior", mesAnterior.getYear());
+        model.addAttribute("mesAnterior", mesAnterior.getMonthValue());
+        model.addAttribute("anyoSiguiente", mesSiguiente.getYear());
+        model.addAttribute("mesSiguiente", mesSiguiente.getMonthValue());
+        model.addAttribute("totalProximas", proximas.size());
         model.addAttribute("citasHoy", citasHoy);
 
         return "calendario/calendario-ver";

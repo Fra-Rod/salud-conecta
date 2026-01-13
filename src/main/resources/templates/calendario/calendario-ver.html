@@ -88,19 +88,19 @@
     <main class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="d-flex align-items-center gap-3">
-                <a th:href="@{/calendario-vista(year=${prevYear}, month=${prevMonth})}"
+                <a th:href="@{/calendario-vista(year=${anyoAnterior}, month=${mesAnterior})}"
                     class="btn btn-secondary btn-sm">
                     <i class="fas fa-chevron-left"></i> Anterior
                 </a>
                 <div>
                     <h2 class="text-primary mb-0">
                         <i class="fas fa-calendar-alt me-2"></i>
-                        <span th:text="${monthName}">Octubre</span> <span th:text="${year}">2025</span>
+                        <span th:text="${nombreMes}">Octubre</span> <span th:text="${anyo}">2025</span>
                     </h2>
                     <p class="text-muted mb-1">Consulta tus eventos, citas o informes programados</p>
-                    <small class="text-muted">Próximas citas: <strong th:text="${proximasCitas ?: 0}">0</strong></small>
+                    <small class="text-muted">Próximas citas: <strong th:text="${totalProximas ?: 0}">0</strong></small>
                 </div>
-                <a th:href="@{/calendario-vista(year=${nextYear}, month=${nextMonth})}"
+                <a th:href="@{/calendario-vista(year=${anyoSiguiente}, month=${mesSiguiente})}"
                     class="btn btn-secondary btn-sm">
                     Siguiente <i class="fas fa-chevron-right"></i>
                 </a>
@@ -129,7 +129,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="week : ${monthGrid}">
+                    <tr th:each="week : ${gridMes}">
                         <td th:each="day : ${week}">
                             <div th:if="${day > 0}">
                                 <strong th:text="${day}">1</strong>

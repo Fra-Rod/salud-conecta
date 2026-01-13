@@ -2,8 +2,8 @@ package com.fran.saludconecta.cita.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +35,6 @@ public class CitaServiceImpl implements ICitaService {
 
     @Override
     public CitaDTO mostrarDetallesPorId(Integer id) {
-        // Si en el futuro se añaden joins / datos extra, añadelos aquí.
-        // Ahora devolvemos el DTO estándar (coincide con otras implementaciones del proyecto).
         return mostrarPorId(id);
     }
 
@@ -55,27 +53,16 @@ public class CitaServiceImpl implements ICitaService {
 
     @Override
     public boolean comprobarCrear(CitaDTO dto) {
-        // Validaciones mínimas: dto no nulo y campos requeridos
-        if (dto == null) return false;
-        if (dto.getFechaCita() == null || dto.getPacienteId() == null || dto.getUsuarioId() == null) return false;
+        if (dto == null)
+            return false;
+        if (dto.getFechaCita() == null || dto.getPacienteId() == null || dto.getUsuarioId() == null)
+            return false;
 
-        // Creación: si id es null se permite crear.
-        if (dto.getId() == null) return true;
+        if (dto.getId() == null)
+            return true;
 
-        // Edición: solo permitimos si el id existe en BBDD
-        var record = repository.obtenerPorId(dto.getId());
+        CitaRecord record = repository.obtenerPorId(dto.getId());
         return record != null;
-    }
-
-    @Override
-    public CitaDTO modificar(Integer id, CitaDTO dto) {
-        if (dto.getNombrePaciente() != null) dto.setNombrePaciente(dto.getNombrePaciente().trim());
-        if (dto.getNombreUsuario() != null) dto.setNombreUsuario(dto.getNombreUsuario().trim());
-        if (dto.getMotivo() != null) dto.setMotivo(dto.getMotivo().trim());
-
-        dto.setFechaModificacion(LocalDateTime.now());
-        CitaRecord record = repository.actualizar(id, dto);
-        return CitaMapper.toDTO(record);
     }
 
     @Override
@@ -85,28 +72,56 @@ public class CitaServiceImpl implements ICitaService {
 
     @Override
     public List<CitaDTO> porUsuario(Integer usuarioId) {
-        return mostrarTodos().stream()
-                .filter(c -> c.getUsuarioId() != null && c.getUsuarioId().equals(usuarioId))
-                .collect(Collectors.toList());
+        List<CitaDTO> todasLasCitas = mostrarTodos();
+        List<CitaDTO> citasUsuario = new ArrayList<>();
+
+        for (CitaDTO c : todasLasCitas) {
+            if (c.getUsuarioId() != null && c.getUsuarioId().equals(usuarioId)) {
+                citasUsuario.add(c);
+            }
+        }
+
+        return citasUsuario;
     }
 
     @Override
     public List<CitaDTO> proximasPorUsuario(Integer usuarioId, int limit) {
-        return mostrarTodos().stream()
-                .filter(c -> c.getUsuarioId() != null && c.getUsuarioId().equals(usuarioId))
-                .filter(c -> c.getFechaCita() != null && c.getFechaCita().isAfter(LocalDateTime.now().minusMinutes(1)))
-                .sorted((a,b) -> a.getFechaCita().compareTo(b.getFechaCita()))
-                .limit(limit)
-                .collect(Collectors.toList());
+        List<CitaDTO> todasLasCitas = mostrarTodos();
+        List<CitaDTO> citasProximas = new ArrayList<>();
+        LocalDateTime ahora = LocalDateTime.now().minusMinutes(1);
+
+        for (CitaDTO c : todasLasCitas) {
+            if (c.getUsuarioId() != null && c.getUsuarioId().equals(usuarioId)) {
+                if (c.getFechaCita() != null && c.getFechaCita().isAfter(ahora)) {
+                    citasProximas.add(c);
+                }
+            }
+        }
+
+        citasProximas.sort((a, b) -> a.getFechaCita().compareTo(b.getFechaCita()));
+
+        if (citasProximas.size() > limit) {
+            return citasProximas.subList(0, limit);
+        }
+
+        return citasProximas;
     }
 
     @Override
     public List<CitaDTO> citasHoyPorUsuario(Integer usuarioId) {
         LocalDate today = LocalDate.now();
-        return mostrarTodos().stream()
-                .filter(c -> c.getUsuarioId() != null && c.getUsuarioId().equals(usuarioId))
-                .filter(c -> c.getFechaCita() != null && c.getFechaCita().toLocalDate().equals(today))
-                .sorted((a,b) -> a.getFechaCita().compareTo(b.getFechaCita()))
-                .collect(Collectors.toList());
+        List<CitaDTO> todasLasCitas = mostrarTodos();
+        List<CitaDTO> citasHoy = new ArrayList<>();
+
+        for (CitaDTO c : todasLasCitas) {
+            if (c.getUsuarioId() != null && c.getUsuarioId().equals(usuarioId)) {
+                if (c.getFechaCita() != null && c.getFechaCita().toLocalDate().equals(today)) {
+                    citasHoy.add(c);
+                }
+            }
+        }
+
+        citasHoy.sort((a, b) -> a.getFechaCita().compareTo(b.getFechaCita()));
+        return citasHoy;
     }
 }

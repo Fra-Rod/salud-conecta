@@ -41,12 +41,4 @@ public class CitaDTO {
 
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaModificacion;
-
-    /**
-     * Campo adicional pensado para vistas (ej. inicio) donde se muestra un nombre breve
-     * del evento (e.g. motivo o nombrePaciente). Se mantiene para compatibilidad con
-     * las plantillas que esperan `c.nombre`.
-     */
-    @Size(max = 100, message = "El nombre no puede tener más de 100 caracteres")
-    private String nombre;
 }

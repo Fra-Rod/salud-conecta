@@ -40,7 +40,8 @@ public class PacienteRepository {
     }
 
     public boolean eliminar(Integer id) {
-        var record = obtenerPorId(id);
+        PacienteRecord record = obtenerPorId(id);
+
         if (record != null) {
             record.delete();
             return true;
@@ -49,7 +50,8 @@ public class PacienteRepository {
     }
 
     public PacienteRecord actualizar(Integer id, PacienteDTO dto) {
-        var record = obtenerPorId(id);
+        PacienteRecord record = obtenerPorId(id);
+
         if (record != null) {
             record.setNombre(dto.getNombre());
             record.setDni(dto.getDni());

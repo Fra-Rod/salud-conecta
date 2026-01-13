@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fran.saludconecta.cita.dto.CitaDTO;
 import com.fran.saludconecta.cita.service.ICitaService;
 import com.fran.saludconecta.jooq.enums.EstadoCita;
+import com.fran.saludconecta.paciente.dto.PacienteDTO;
 import com.fran.saludconecta.paciente.service.IPacienteService;
+import com.fran.saludconecta.usuario.dto.UsuarioDTO;
 import com.fran.saludconecta.usuario.service.IUsuarioService;
 
 @Controller
@@ -33,17 +34,12 @@ public class CitaVistaController {
     @Autowired
     private IUsuarioService usuarioService;
 
-    /**
-     * Muestra el formulario para crear una nueva cita.
-     */
     @GetMapping("/cita/crear")
     public String mostrarFormularioCrear(Principal principal, Model model) {
-        String usuarioActivo = principal != null ? principal.getName() : "Invitado";
-        model.addAttribute("usuarioActivo", usuarioActivo);
 
-        // Crear un DTO vacío para el formulario
+        model.addAttribute("usuarioActivo", principal.getName());
+
         CitaDTO cita = new CitaDTO();
-        // Estado por defecto: PENDIENTE
         cita.setEstado(EstadoCita.pendiente);
 
         model.addAttribute("cita", cita);
@@ -54,19 +50,12 @@ public class CitaVistaController {
         return "cita/cita-crear";
     }
 
-    /**
-     * Procesa el formulario de creación de cita.
-     */
-    /**
-     * Procesa el formulario de creación de cita.
-     */
     @PostMapping("/cita/crear")
     public String crearCita(
             @ModelAttribute("cita") CitaDTO cita,
             BindingResult result,
             Principal principal,
-            Model model,
-            RedirectAttributes redirectAttributes) {
+            Model model) {
 
         // Validaciones manuales
         if (cita.getPacienteId() == null) {
@@ -79,6 +68,7 @@ public class CitaVistaController {
 
         if (cita.getFechaCita() == null) {
             result.rejectValue("fechaCita", "error.cita", "La fecha de la cita es obligatoria");
+
         } else if (cita.getFechaCita().isBefore(LocalDateTime.now())) {
             result.rejectValue("fechaCita", "error.cita", "La fecha de la cita debe ser en el futuro");
         }
@@ -88,26 +78,26 @@ public class CitaVistaController {
         }
 
         // DEBUG: mostrar todos los errores
-        System.out.println("=== DEBUG CREAR CITA ===");
-        System.out.println("Has errors: " + result.hasErrors());
-        System.out.println("CitaDTO recibido: " + cita);
-        System.out.println("  - pacienteId: " + cita.getPacienteId());
-        System.out.println("  - usuarioId: " + cita.getUsuarioId());
-        System.out.println("  - fechaCita: " + cita.getFechaCita());
-        System.out.println("  - motivo: " + cita.getMotivo());
-        System.out.println("  - estado: " + cita.getEstado());
-        if (result.hasErrors()) {
-            System.out.println("Errores encontrados:");
-            result.getAllErrors().forEach(error -> {
-                System.out.println("  - " + error);
-            });
-        }
-        System.out.println("========================");
+        // System.out.println("=== DEBUG CREAR CITA ===");
+        // System.out.println("Has errors: " + result.hasErrors());
+        // System.out.println("CitaDTO recibido: " + cita);
+        // System.out.println(" - pacienteId: " + cita.getPacienteId());
+        // System.out.println(" - usuarioId: " + cita.getUsuarioId());
+        // System.out.println(" - fechaCita: " + cita.getFechaCita());
+        // System.out.println(" - motivo: " + cita.getMotivo());
+        // System.out.println(" - estado: " + cita.getEstado());
+
+        // if (result.hasErrors()) {
+        // System.out.println("Errores encontrados:");
+        // result.getAllErrors().forEach(error -> {
+        // System.out.println(" - " + error);
+        // });
+        // }
+        // System.out.println("========================");
 
         // Si hay errores, volver al formulario
         if (result.hasErrors()) {
-            String usuarioActivo = principal != null ? principal.getName() : "Invitado";
-            model.addAttribute("usuarioActivo", usuarioActivo);
+            model.addAttribute("usuarioActivo", principal.getName());
             model.addAttribute("pacientes", pacienteService.mostrarTodos());
             model.addAttribute("usuarios", usuarioService.mostrarTodos());
             model.addAttribute("estados", EstadoCita.values());
@@ -115,12 +105,12 @@ public class CitaVistaController {
         }
 
         // Poblar nombres desde los IDs
-        var paciente = pacienteService.mostrarPorId(cita.getPacienteId());
+        PacienteDTO paciente = pacienteService.mostrarPorId(cita.getPacienteId());
         if (paciente != null) {
             cita.setNombrePaciente(paciente.getNombre());
         }
 
-        var usuario = usuarioService.mostrarPorId(cita.getUsuarioId());
+        UsuarioDTO usuario = usuarioService.mostrarPorId(cita.getUsuarioId());
         if (usuario != null) {
             cita.setNombreUsuario(usuario.getNombre());
         }
@@ -131,22 +121,10 @@ public class CitaVistaController {
         cita.setFechaModificacion(now);
 
         // Crear la cita
-        boolean creado = citaService.crear(cita);
-
-        if (creado) {
-            redirectAttributes.addFlashAttribute("mensaje", "Cita creada exitosamente");
-            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
-        } else {
-            redirectAttributes.addFlashAttribute("mensaje", "Error al crear la cita");
-            redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
-        }
-
+        citaService.crear(cita);
         return "redirect:/calendario-vista";
     }
 
-    /**
-     * Muestra el formulario de búsqueda y listado de citas para eliminar.
-     */
     @GetMapping("/cita/buscar")
     public String buscarCitas(
             @RequestParam(required = false) Integer pacienteId,
@@ -155,10 +133,7 @@ public class CitaVistaController {
             Principal principal,
             Model model) {
 
-        String usuarioActivo = principal != null ? principal.getName() : "Invitado";
-        model.addAttribute("usuarioActivo", usuarioActivo);
-
-        // Cargar listas para los filtros
+        model.addAttribute("usuarioActivo", principal.getName());
         model.addAttribute("pacientes", pacienteService.mostrarTodos());
         model.addAttribute("usuarios", usuarioService.mostrarTodos());
 
@@ -170,18 +145,48 @@ public class CitaVistaController {
         // Si hay al menos un filtro, buscar citas
         if (pacienteId != null || usuarioId != null || fecha != null) {
             List<CitaDTO> todasLasCitas = citaService.mostrarTodos();
-            List<CitaDTO> citasFiltradas = todasLasCitas.stream()
-                    .filter(c -> pacienteId == null || c.getPacienteId().equals(pacienteId))
-                    .filter(c -> usuarioId == null || c.getUsuarioId().equals(usuarioId))
-                    .filter(c -> {
-                        if (fecha == null || fecha.isEmpty())
-                            return true;
-                        if (c.getFechaCita() == null)
-                            return false;
-                        return c.getFechaCita().toLocalDate().toString().equals(fecha);
-                    })
-                    .sorted((a, b) -> a.getFechaCita().compareTo(b.getFechaCita()))
-                    .toList();
+            List<CitaDTO> citasFiltradas = new java.util.ArrayList<>();
+
+            for (CitaDTO c : todasLasCitas) {
+                boolean cumpleFiltros = true;
+
+                if (pacienteId != null && !c.getPacienteId().equals(pacienteId)) {
+                    cumpleFiltros = false;
+                }
+
+                if (usuarioId != null && !c.getUsuarioId().equals(usuarioId)) {
+                    cumpleFiltros = false;
+                }
+
+                if (fecha != null && !fecha.isEmpty()) {
+                    if (c.getFechaCita() == null || !c.getFechaCita().toLocalDate().toString().equals(fecha)) {
+                        cumpleFiltros = false;
+                    }
+                }
+
+                if (cumpleFiltros) {
+                    citasFiltradas.add(c);
+                }
+            }
+
+            citasFiltradas.sort((a, b) -> a.getFechaCita().compareTo(b.getFechaCita()));
+
+            // Poblar nombres desde los IDs
+            for (CitaDTO c : citasFiltradas) {
+                if (c.getPacienteId() != null) {
+                    PacienteDTO paciente = pacienteService.mostrarPorId(c.getPacienteId());
+                    if (paciente != null) {
+                        c.setNombrePaciente(paciente.getNombre());
+                    }
+                }
+
+                if (c.getUsuarioId() != null) {
+                    UsuarioDTO usuario = usuarioService.mostrarPorId(c.getUsuarioId());
+                    if (usuario != null) {
+                        c.setNombreUsuario(usuario.getNombre());
+                    }
+                }
+            }
 
             model.addAttribute("citas", citasFiltradas);
         }
@@ -189,50 +194,33 @@ public class CitaVistaController {
         return "cita/cita-buscar";
     }
 
-    /**
-     * Muestra la confirmación para eliminar una cita.
-     */
     @GetMapping("/cita/eliminar/{id}")
     public String confirmarEliminar(@PathVariable Integer id, Principal principal, Model model) {
-        String usuarioActivo = principal != null ? principal.getName() : "Invitado";
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
         CitaDTO cita = citaService.mostrarPorId(id);
 
-        // Poblar los nombres desde los IDs
         if (cita.getPacienteId() != null) {
-            var paciente = pacienteService.mostrarPorId(cita.getPacienteId());
+            PacienteDTO paciente = pacienteService.mostrarPorId(cita.getPacienteId());
+
             if (paciente != null) {
                 cita.setNombrePaciente(paciente.getNombre());
             }
         }
 
         if (cita.getUsuarioId() != null) {
-            var usuario = usuarioService.mostrarPorId(cita.getUsuarioId());
+            UsuarioDTO usuario = usuarioService.mostrarPorId(cita.getUsuarioId());
             if (usuario != null) {
                 cita.setNombreUsuario(usuario.getNombre());
             }
         }
 
         model.addAttribute("cita", cita);
-
         return "cita/cita-eliminar-confirmar";
     }
 
-    /**
-     * Elimina la cita.
-     */
     @PostMapping("/cita/eliminar/{id}")
-    public String eliminarCita(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
-        boolean eliminado = citaService.borrar(id);
-
-        if (eliminado) {
-            redirectAttributes.addFlashAttribute("mensaje", "Cita eliminada exitosamente");
-            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
-        } else {
-            redirectAttributes.addFlashAttribute("mensaje", "Error al eliminar la cita");
-            redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
-        }
-
+    public String eliminarCita(@PathVariable Integer id) {
+        citaService.borrar(id);
         return "redirect:/cita/buscar";
     }
 }

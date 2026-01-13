@@ -171,7 +171,7 @@
                         </thead>
                         <tbody>
                             <tr th:each="cita : ${citasHoy}">
-                                <td th:text="${cita.nombre}">Cita</td>
+                                <td th:text="${cita.motivo}">Cita</td>
                                 <td th:text="${cita.fechaCita}">09:00</td>
                                 <td>
                                     <span class="badge bg-primary" th:text="${cita.estado}">Pendiente</span>

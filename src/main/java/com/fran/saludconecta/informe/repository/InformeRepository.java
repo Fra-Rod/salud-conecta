@@ -58,7 +58,8 @@ public class InformeRepository {
     }
 
     public boolean eliminar(Integer id) {
-        var record = obtenerPorId(id);
+        InformeRecord record = obtenerPorId(id);
+
         if (record != null) {
             record.delete();
             return true;
@@ -67,7 +68,8 @@ public class InformeRepository {
     }
 
     public InformeRecord actualizar(Integer id, InformeDTO dto) {
-        var record = obtenerPorId(id);
+        InformeRecord record = obtenerPorId(id);
+
         if (record != null) {
             record.setUsuarioId(dto.getUsuarioId());
             record.setNombreUsuario(dto.getNombreUsuario());

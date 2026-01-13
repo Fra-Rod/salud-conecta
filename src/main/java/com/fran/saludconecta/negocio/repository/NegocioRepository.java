@@ -49,7 +49,8 @@ public class NegocioRepository {
     }
 
     public boolean eliminar(Integer id) {
-        var record = obtenerPorId(id);
+        NegocioRecord record = obtenerPorId(id);
+
         if (record != null) {
             record.delete();
             return true;
@@ -58,7 +59,8 @@ public class NegocioRepository {
     }
 
     public NegocioRecord actualizar(Integer id, NegocioDTO dto) {
-        var record = obtenerPorId(id);
+        NegocioRecord record = obtenerPorId(id);
+
         if (record != null) {
             record.setNombre(dto.getNombre());
             record.setDireccion(dto.getDireccion());

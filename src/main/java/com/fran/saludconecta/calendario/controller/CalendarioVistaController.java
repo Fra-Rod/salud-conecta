@@ -44,6 +44,7 @@ public class CalendarioVistaController {
             var usuarioOpt = usuarioService.mostrarTodos().stream()
                     .filter(u -> u.getNombre().equals(usuarioActivo))
                     .findFirst();
+
             if (usuarioOpt.isPresent()) {
                 usuarioId = usuarioOpt.get().getId();
             }

@@ -98,7 +98,7 @@
                         <span th:text="${nombreMes}">Octubre</span> <span th:text="${anyo}">2025</span>
                     </h2>
                     <p class="text-muted mb-1">Consulta tus eventos, citas o informes programados</p>
-                    <small class="text-muted">Próximas citas: <strong th:text="${totalProximas ?: 0}">0</strong></small>
+                    <small class="text-muted">Próximas citas: <strong th:text="${totalProximas}">0</strong></small>
                 </div>
                 <a th:href="@{/calendario-vista(year=${anyoSiguiente}, month=${mesSiguiente})}"
                     class="btn btn-secondary btn-sm">
@@ -133,15 +133,13 @@
                         <td th:each="day : ${week}">
                             <div th:if="${day > 0}">
                                 <strong th:text="${day}">1</strong>
-                                <div th:if="${citasPorDia[day + ''] != null}">
-                                    <div th:each="c : ${citasPorDia[day + '']}">
+                                <div th:if="${citasPorDia[__${day}__]}">
+                                    <div th:each="c : ${citasPorDia[__${day}__]}">
                                         <span class="event-badge bg-primary text-white" th:title="${c.motivo}">
                                             <span class="event-time"
                                                 th:text="${#temporals.format(c.fechaCita,'HH:mm')}">09:00</span>
-                                            <span th:if="${c.motivo != null}" th:text="${c.motivo}">Motivo</span>
-                                            <span th:if="${c.motivo == null}">Cita</span>
-                                            <span th:if="${c.estado != null}"
-                                                th:text="' - ' + ${c.estado.literal}"></span>
+                                            <span th:text="${c.motivo} ?: 'Cita'">Motivo</span>
+                                            <span th:if="${c.estado}" th:text="' - ' + ${c.estado.literal}"></span>
                                         </span>
                                     </div>
                                 </div>
@@ -159,10 +157,8 @@
                 <li class="list-group-item" th:each="c : ${citasHoy}">
                     <strong th:text="${#temporals.format(c.fechaCita,'dd/MM/yyyy HH:mm')}">30/11/2025 09:00</strong>
                     —
-                    <span th:if="${c.motivo != null}" th:text="${c.motivo}">Motivo</span>
-                    <span th:if="${c.motivo == null}">Cita</span>
-                    <span class="text-muted" style="margin-left: 8px;" th:if="${c.estado != null}"
-                        th:text="${c.estado.literal}">ESTADO</span>
+                    <span th:text="${c.motivo} ?: 'Cita'">Motivo</span>
+                    <span class="text-muted ms-2" th:if="${c.estado}" th:text="${c.estado.literal}">ESTADO</span>
                 </li>
                 <li class="list-group-item" th:if="${#lists.isEmpty(citasHoy)}">No hay citas hoy</li>
             </ul>

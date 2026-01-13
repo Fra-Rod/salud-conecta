@@ -73,48 +73,50 @@
         </h2>
 
         <!-- Filtros de búsqueda -->
-        <div class="filter-box">
-            <h5 class="mb-3"><i class="fas fa-filter me-2"></i>Filtros de Búsqueda</h5>
-            <form th:action="@{/cita/buscar}" method="get">
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="pacienteId" class="form-label">Paciente</label>
-                        <select name="pacienteId" id="pacienteId" class="form-select">
-                            <option value="">-- Todos los pacientes --</option>
-                            <option th:each="p : ${pacientes}" th:value="${p.id}"
-                                th:text="${p.nombre + ' (' + p.dni + ')'}"
-                                th:selected="${pacienteId != null && pacienteId == p.id}">
-                                Paciente
-                            </option>
-                        </select>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="fas fa-filter me-2"></i>Filtros de Búsqueda</h5>
+                <form th:action="@{/cita/buscar}" method="get">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="pacienteId" class="form-label">Paciente</label>
+                            <select name="pacienteId" id="pacienteId" class="form-select">
+                                <option value="">-- Todos los pacientes --</option>
+                                <option th:each="p : ${pacientes}" th:value="${p.id}"
+                                    th:text="${p.nombre + ' (' + p.dni + ')'}"
+                                    th:selected="${pacienteId != null && pacienteId == p.id}">
+                                    Paciente
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="usuarioId" class="form-label">Profesional</label>
+                            <select name="usuarioId" id="usuarioId" class="form-select">
+                                <option value="">-- Todos los profesionales --</option>
+                                <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombre}"
+                                    th:selected="${usuarioId != null && usuarioId == u.id}">
+                                    Usuario
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="fecha" class="form-label">Fecha</label>
+                            <input type="date" name="fecha" id="fecha" class="form-control" th:value="${fecha}">
+                        </div>
                     </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label for="usuarioId" class="form-label">Profesional</label>
-                        <select name="usuarioId" id="usuarioId" class="form-select">
-                            <option value="">-- Todos los profesionales --</option>
-                            <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nombre}"
-                                th:selected="${usuarioId != null && usuarioId == u.id}">
-                                Usuario
-                            </option>
-                        </select>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                        <a th:href="@{/cita/buscar}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Limpiar Filtros
+                        </a>
                     </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label for="fecha" class="form-label">Fecha</label>
-                        <input type="date" name="fecha" id="fecha" class="form-control" th:value="${fecha}">
-                    </div>
-                </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary me-2">
-                        <i class="fas fa-search"></i> Buscar
-                    </button>
-                    <a th:href="@{/cita/buscar}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Limpiar Filtros
-                    </a>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
 
         <!-- Listado de citas -->
@@ -145,9 +147,8 @@
                             01/12/2025 09:00</td>
                         <td th:text="${cita.motivo}">Motivo</td>
                         <td class="text-center">
-                            <span class="badge bg-primary" th:if="${cita.estado != null}"
-                                th:text="${cita.estado.literal}">Estado</span>
-                            <span class="badge bg-secondary" th:if="${cita.estado == null}">Sin estado</span>
+                            <span class="badge bg-primary"
+                                th:text="${cita.estado?.literal} ?: 'Sin estado'">Estado</span>
                         </td>
                         <td class="text-center">
                             <a th:href="@{'/cita/eliminar/' + ${cita.id}}" class="btn btn-sm btn-danger">
@@ -161,10 +162,6 @@
 
         <div th:if="${citas != null && citas.isEmpty()}" class="alert alert-info text-center">
             <i class="fas fa-info-circle me-2"></i>No se encontraron citas con los filtros seleccionados.
-        </div>
-
-        <div th:if="${citas == null}" class="alert alert-secondary text-center">
-            <i class="fas fa-search me-2"></i>Utilice los filtros para buscar citas.
         </div>
 
         <div class="text-center mt-4">

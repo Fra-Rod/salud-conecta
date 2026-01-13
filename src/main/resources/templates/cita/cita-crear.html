@@ -58,7 +58,7 @@
                 </div>
 
                 <form class="d-flex align-items-center me-3" th:action="@{/logout}" method="post">
-                    <button class="btn btn-sm btn-outline-light" type="submit">
+                    <button class="btn btn-sm btn-light" type="submit">
                         <i class="fas fa-sign-out-alt"></i>Cerrar sesión</button>
                 </form>
             </div>
@@ -94,10 +94,8 @@
 
             <div class="mb-3">
                 <label for="fechaCita" class="form-label">Fecha y Hora de la Cita *</label>
-                <input type="datetime-local" th:field="*{fechaCita}" id="fechaCita" class="form-control"
-                    th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd''T''HH:mm')}" required>
+                <input type="datetime-local" th:field="*{fechaCita}" id="fechaCita" class="form-control" required>
                 <div th:if="${#fields.hasErrors('fechaCita')}" class="text-danger mt-1" th:errors="*{fechaCita}"></div>
-                <small class="form-text text-muted">La cita debe ser programada para una fecha futura</small>
             </div>
 
             <div class="mb-3">
@@ -111,8 +109,7 @@
             <div class="mb-3">
                 <label for="estado" class="form-label">Estado *</label>
                 <select th:field="*{estado}" id="estado" class="form-select" required>
-                    <option th:each="e : ${estados}" th:value="${e}" th:text="${e.literal}"
-                        th:selected="${e.name() == 'PENDIENTE'}">Estado</option>
+                    <option th:each="e : ${estados}" th:value="${e}" th:text="${e.literal}">Estado</option>
                 </select>
                 <div th:if="${#fields.hasErrors('estado')}" class="text-danger mt-1" th:errors="*{estado}"></div>
             </div>

@@ -17,43 +17,45 @@ import com.fran.saludconecta.informe.service.IInformeService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@RestController // combina @Controller + @ResponseBody, por eso devuelve JSON directamente.
-@RequestMapping("/api/informes") // prefijo común para todas las rutas.
+@RestController
+@RequestMapping("/api/informes")
 public class InformeController {
-	
+
 	@Autowired
-	private IInformeService service; 
-	
-	private ErrorResponse mostrarError(HttpServletRequest request, HttpStatus status , String message) {
-		ErrorResponse error = ErrorResponse.builder() // Esto es el response personalizado
+	private IInformeService service;
+
+	private ErrorResponse mostrarError(HttpServletRequest request, HttpStatus status, String message) {
+		ErrorResponse error = ErrorResponse.builder()
 				.timeStamp(LocalDateTime.now())
 				.status(status.value())
 				.error("Algo ha ido mal")
 				.message(message)
 				.path(request.getRequestURI())
 				.build();
-		
+
 		return error;
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<?> listarTodos(HttpServletRequest request) {
 		List<InformeDTO> lista = service.mostrarTodos();
-		
+
 		if (!lista.isEmpty()) {
-			return ResponseEntity.ok(lista); // 200 OK con lista
+			return ResponseEntity.ok(lista);
+
 		} else {
 			ErrorResponse error = mostrarError(request, HttpStatus.OK, "La lista está vacía");
-			return ResponseEntity.status(HttpStatus.OK).body(error); // Aquí lo devuelve en la propia llamada al lado de los segundos tardados
+			return ResponseEntity.status(HttpStatus.OK).body(error);
 		}
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<?> obtener(@PathVariable Integer id, HttpServletRequest request) { 
+	public ResponseEntity<?> obtener(@PathVariable Integer id, HttpServletRequest request) {
 		InformeDTO dtoEncontrado = service.mostrarPorId(id);
-		
+
 		if (dtoEncontrado != null) {
 			return ResponseEntity.ok(dtoEncontrado);
+
 		} else {
 			ErrorResponse error = mostrarError(request, HttpStatus.OK, "ID " + id + " no encontrado");
 			return ResponseEntity.status(HttpStatus.OK).body(error);

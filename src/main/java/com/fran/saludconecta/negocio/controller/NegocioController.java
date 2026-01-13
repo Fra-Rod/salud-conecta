@@ -38,6 +38,7 @@ public class NegocioController {
 
 		if (!listaNegocios.isEmpty()) {
 			return ResponseEntity.ok(listaNegocios);
+
 		} else {
 			ErrorResponse error = mostrarError(request, HttpStatus.OK,
 					"La lista de negocios está vacía");

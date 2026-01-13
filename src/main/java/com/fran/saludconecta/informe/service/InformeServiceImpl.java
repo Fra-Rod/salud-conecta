@@ -13,23 +13,23 @@ import com.fran.saludconecta.informe.repository.InformeRepository;
 import com.fran.saludconecta.jooq.tables.records.InformeRecord;
 
 @Service
-public class InformeServiceImpl implements IInformeService{
+public class InformeServiceImpl implements IInformeService {
 
-	@Autowired
-	private DSLContext dsl;
+    @Autowired
+    private DSLContext dsl;
 
-	@Autowired
-	private InformeRepository repository;
-	
-	@Override
-	public List<InformeDTO> mostrarTodos() {
-		return repository.obtenerTodos().stream().map(InformeMapper::toDTO).toList();
-	}
+    @Autowired
+    private InformeRepository repository;
 
-	@Override
-	public InformeDTO mostrarPorId(Integer id) {
-		return InformeMapper.toDTO(repository.obtenerPorId(id));
-	}
+    @Override
+    public List<InformeDTO> mostrarTodos() {
+        return repository.obtenerTodos().stream().map(InformeMapper::toDTO).toList();
+    }
+
+    @Override
+    public InformeDTO mostrarPorId(Integer id) {
+        return InformeMapper.toDTO(repository.obtenerPorId(id));
+    }
 
     @Override
     public boolean crear(InformeDTO dto) {
@@ -52,7 +52,7 @@ public class InformeServiceImpl implements IInformeService{
         dto.setContenido(dto.getContenido().trim());
         dto.setFechaCreacion(dto.getFechaCreacion());
         dto.setFechaModificacion(LocalDateTime.now());
-		
+
         InformeRecord record = repository.actualizar(id, dto);
         return InformeMapper.toDTO(record);
     }

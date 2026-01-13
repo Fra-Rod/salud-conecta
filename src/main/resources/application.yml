@@ -24,8 +24,3 @@ spring:
           starttls:
             enable: true
 
-logging:
-  level:
-    "[org.springframework.mail]": INFO
-    "[jakarta.mail]": INFO
-

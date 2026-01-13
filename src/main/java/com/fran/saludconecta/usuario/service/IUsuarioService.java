@@ -13,7 +13,7 @@ public interface IUsuarioService {
 
 	boolean crear(UsuarioDTO dto);
 
-	boolean comprobarCrear(UsuarioDTO dto);
+	boolean comprobarModificar(UsuarioDTO dto);
 
 	UsuarioDTO modificar(Integer id, UsuarioDTO dto);
 

@@ -47,20 +47,13 @@ public class VistaController {
     @GetMapping("/inicio")
     public String inicio(Principal principal, Model model) {
 
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        UsuarioDTO usuarioDto = usuarioService.mostrarTodos().stream()
+                .filter(u -> principal.getName().equals(u.getNombre()))
+                .findFirst()
+                .orElse(null);
 
-        // Usuario completo para detalles perfil
-        UsuarioDTO usuarioDto = null;
-        try {
-            usuarioDto = usuarioService.mostrarTodos().stream()
-                    .filter(u -> usuarioActivo.equals(u.getNombre()))
-                    .findFirst()
-                    .orElse(null);
-        } catch (Exception e) {
-            usuarioDto = null;
-        }
         model.addAttribute("usuario", usuarioDto);
+        model.addAttribute("usuarioActivo", usuarioDto.getNombre());
 
         // Calculos rápidos para el dashboard
         Integer totalUsuarios = usuarioService.mostrarTodos().size();

@@ -208,7 +208,7 @@ INSERT INTO clinica.paciente_usuario (paciente_id, usuario_id) VALUES
 (6, 6), (7, 7), (8, 8), (9, 9), (10, 10);
 
 
--- Citas de ejemplo para el mes actual (distribuidas entre varios usuarios)
+-- Citas de ejemplo para el mes actual
 INSERT INTO clinica.cita (paciente_id, usuario_id, fecha_cita, motivo, estado) VALUES
 (1, 1, DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '0 days' + TIME '09:00:00', 'Chequeo general', 'pendiente'),
 (2, 1, DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '0 days' + TIME '11:00:00', 'Dolor de cabeza', 'confirmada'),

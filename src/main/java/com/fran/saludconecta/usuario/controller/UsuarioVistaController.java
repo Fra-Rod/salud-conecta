@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.fran.saludconecta.negocio.dto.NegocioDTO;
 import com.fran.saludconecta.negocio.service.INegocioService;
 import com.fran.saludconecta.usuario.dto.UsuarioDTO;
 import com.fran.saludconecta.usuario.service.IUsuarioService;
@@ -30,28 +31,19 @@ public class UsuarioVistaController {
     @GetMapping("/usuario-perfil/{id}")
     public String mostrarPerfil(Principal principal, @PathVariable Integer id, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        UsuarioDTO usuarioDto = service.mostrarTodos().stream()
+                .filter(u -> principal.getName().equals(u.getNombre()))
+                .findFirst()
+                .orElse(null);
 
-        // Intenta obtener el DTO completo del usuario activo para mostrar más detalles
-        // en el perfil
-        UsuarioDTO usuarioDto = null;
-        try {
-            usuarioDto = service.mostrarTodos().stream()
-                    .filter(u -> usuarioActivo.equals(u.getNombre()))
-                    .findFirst()
-                    .orElse(null);
-        } catch (Exception e) {
-            usuarioDto = null;
-        }
         model.addAttribute("usuario", usuarioDto);
+        model.addAttribute("usuarioActivo", usuarioDto.getNombre());
 
         // Añade atributos específicos para el perfil
         String nombreNegocio = "Sin Negocio";
         if (usuarioDto != null && usuarioDto.getNegocioId() != null) {
             try {
-                var negocio = negocioService.mostrarPorId(usuarioDto.getNegocioId());
+                NegocioDTO negocio = negocioService.mostrarPorId(usuarioDto.getNegocioId());
                 if (negocio != null) {
                     nombreNegocio = negocio.getNombre();
                 }
@@ -67,9 +59,7 @@ public class UsuarioVistaController {
     @GetMapping("/usuario-lista")
     public String mostrarLista(Principal principal, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
 
         List<UsuarioDTO> lista = service.mostrarTodos();
         model.addAttribute("usuarios", lista);
@@ -79,9 +69,7 @@ public class UsuarioVistaController {
     @GetMapping("/usuario/ver/{id}")
     public String mostrarDetalle(Principal principal, @PathVariable Integer id, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
 
         UsuarioDTO dto = service.mostrarDetallesPorId(id);
         model.addAttribute("usuario", dto);
@@ -91,9 +79,7 @@ public class UsuarioVistaController {
     @GetMapping("/usuario/crear")
     public String mostrarFormularioCreacion(Principal principal, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
 
         model.addAttribute("usuario", new UsuarioDTO());
         model.addAttribute("negocios", negocioService.mostrarTodos());
@@ -104,21 +90,17 @@ public class UsuarioVistaController {
     public String procesarCreacion(Principal principal, @Valid @ModelAttribute("usuario") UsuarioDTO dto,
             BindingResult result, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
 
-        // Si hay errores de validación estándar (NotBlank, Size, ...)
+        // Si hay errores de validación (NotBlank, Size, ...)
+        // se vuelve a mostrar el formulario con errores
         if (result.hasErrors()) {
             model.addAttribute("negocios", negocioService.mostrarTodos());
-            return "usuario/usuario-crear"; // vuelve a mostrar el formulario con errores
+            return "usuario/usuario-crear";
         }
 
-        // Comprobar existencia: suponiendo que el servicio tiene un método para ello.
-        // Si no existe, puedes usar service.mostrarTodos().stream().anyMatch(...)
-        boolean creado = service.crear(dto); // según tu impl. actual devuelve boolean
+        boolean creado = service.crear(dto);
         if (!creado) {
-            // Asumiendo que la comprobación está basada en email:
             result.rejectValue("email", "error.email", "Ya existe un usuario con ese email");
             model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-crear";
@@ -131,9 +113,7 @@ public class UsuarioVistaController {
     @GetMapping("/usuario/editar/{id}")
     public String mostrarFormularioEdicion(Principal principal, @PathVariable Integer id, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
 
         UsuarioDTO dto = service.mostrarPorId(id);
         if (dto != null) {
@@ -150,21 +130,15 @@ public class UsuarioVistaController {
     public String procesarEdicion(Principal principal, @PathVariable Integer id,
             @Valid @ModelAttribute("usuario") UsuarioDTO dto, BindingResult result, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
 
-        // Si hay errores de validación estándar (NotBlank, Size, ...)
         if (result.hasErrors()) {
             model.addAttribute("negocios", negocioService.mostrarTodos());
-            return "usuario/usuario-editar"; // vuelve a mostrar el formulario con errores
+            return "usuario/usuario-editar";
         }
 
-        // Comprobar existencia: suponiendo que el servicio tiene un método para ello.
-        // Si no existe, puedes usar service.mostrarTodos().stream().anyMatch(...)
-        boolean creado = service.comprobarCrear(dto); // según tu impl. actual devuelve boolean
-        if (!creado) {
-            // Asumiendo que la comprobación está basada en email:
+        boolean puedeModificar = service.comprobarModificar(dto);
+        if (!puedeModificar) {
             result.rejectValue("email", "error.email", "Ya existe un usuario con ese email");
             model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-editar";
@@ -173,7 +147,6 @@ public class UsuarioVistaController {
         try {
             service.modificar(id, dto);
         } catch (DataIntegrityViolationException ex) {
-            // Podría ser DuplicateKeyException por UNIQUE(email)
             result.rejectValue("email", "error.email", "Ese email ya está en uso");
             model.addAttribute("negocios", negocioService.mostrarTodos());
             return "usuario/usuario-editar";
@@ -185,9 +158,7 @@ public class UsuarioVistaController {
     @GetMapping("/usuario/eliminar/{id}")
     public String mostrarConfirmacionEliminacion(Principal principal, @PathVariable Integer id, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
 
         UsuarioDTO dto = service.mostrarPorId(id);
         if (dto != null) {
@@ -202,9 +173,18 @@ public class UsuarioVistaController {
     @PostMapping("/usuario/eliminar/{id}")
     public String procesarEliminacion(Principal principal, @PathVariable Integer id, Model model) {
 
-        // Aquí obtén el nombre del usuario autenticado
-        String usuarioActivo = principal.getName();
-        model.addAttribute("usuarioActivo", usuarioActivo);
+        model.addAttribute("usuarioActivo", principal.getName());
+
+        List<UsuarioDTO> usuarios = service.mostrarTodos();
+        UsuarioDTO usuarioAEliminar = null;
+
+        for (UsuarioDTO u : usuarios)
+            if (u.getId().equals(id) && !u.getNombre().equals(principal.getName()))
+                usuarioAEliminar = u;
+
+        if (usuarioAEliminar == null) {
+            return "redirect:/usuario-lista";
+        }
 
         service.borrar(id);
         return "redirect:/usuario-lista";

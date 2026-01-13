@@ -26,12 +26,18 @@
             <i class="fas fa-exclamation-triangle me-2"></i> Confirmar Eliminación
         </h2>
 
+        <!-- Mensaje de error si intenta eliminar su propia cuenta -->
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <i class="fas fa-ban me-2"></i>
+            <strong th:text="${error}">Error</strong>
+        </div>
+
         <p>¿Estás seguro de que deseas eliminar al usuario <strong th:text="${usuario.nombre}">Nombre</strong> con Email
             <strong th:text="${usuario.email}">Email</strong>?</p>
 
         <div class="mt-4">
             <form th:action="@{'/usuario/eliminar/' + ${usuario.id}}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-danger">
+                <button type="submit" class="btn btn-danger" th:disabled="${error != null}">
                     <i class="fas fa-check"></i> Sí, eliminar
                 </button>
             </form>

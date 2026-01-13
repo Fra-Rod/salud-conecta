@@ -31,12 +31,17 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
-	public UsuarioDTO mostrarDetallesPorId(Integer id) {
-		UsuarioDTO dto = mostrarPorId(id);
+    public UsuarioDTO mostrarDetallesPorId(Integer id) {
+        UsuarioDTO dto = mostrarPorId(id);
+
+        if (dto == null) {
+            return null;
+        }
+
         List<PacienteDTO> listaPacientes = repository.obtenerTodosPacientesUsuarios(id);
         dto.setPacientes(listaPacientes);
-		return dto;
-	}
+        return dto;
+    }
 
     @Override
     public boolean crear(UsuarioDTO dto) {
@@ -54,28 +59,22 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
-    public boolean comprobarCrear(UsuarioDTO dto) {
-        if (dto == null || dto.getEmail() == null) return false;
+    public boolean comprobarModificar(UsuarioDTO dto) {
+        String email = dto.getEmail().trim().toLowerCase();
+        UsuarioRecord usuarioConEsteEmail = repository.obtenerPorEmail(email);
 
-        String emailNormalized = dto.getEmail().trim().toLowerCase();
-        var recordByEmail = repository.obtenerPorEmail(emailNormalized);
-
-        if (dto.getId() == null) {
-            // Creación: OK solo si no hay nadie con ese email
-            return recordByEmail == null;
-        } else {
-            // Edición: si no existe nadie con ese email -> OK
-            if (recordByEmail == null) return true;
-            // Si existe, OK solo si es el mismo usuario (mismo id)
-            return recordByEmail.getId().equals(dto.getId());
+        if (usuarioConEsteEmail == null) {
+            return true;
         }
+
+        return usuarioConEsteEmail.getId().equals(dto.getId());
     }
 
     @Override
     public UsuarioDTO modificar(Integer id, UsuarioDTO dto) {
         dto.setNombre(dto.getNombre().trim());
         dto.setEmail(dto.getEmail().trim());
-        
+
         UsuarioRecord record = repository.actualizar(id, dto);
         return UsuarioMapper.toDTO(record);
     }

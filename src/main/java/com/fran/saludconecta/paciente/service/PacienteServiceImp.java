@@ -50,7 +50,6 @@ public class PacienteServiceImp implements IPacienteService {
 		return false;
 	}
 
-
 	public boolean comprobarCrear(PacienteDTO dto) {
 		PacienteRecord guardarRecord = PacienteMapper.fromDTO(dto, dsl);
 		PacienteRecord comprobarRecordPorId = repository.obtenerPorId(guardarRecord.getId());
@@ -68,6 +67,7 @@ public class PacienteServiceImp implements IPacienteService {
 		dto.setNombre(dto.getNombre().trim());
 		dto.setDni(dto.getDni().trim());
 		PacienteRecord record = repository.actualizar(id, dto);
+
 		return PacienteMapper.toDTO(record);
 	}
 
@@ -78,12 +78,11 @@ public class PacienteServiceImp implements IPacienteService {
 
 	@Override
 	public PacienteDTO mostrarDetallesPorId(Integer id) {
-		// falta comprobar que si el id es null porque ya no existe el paciente peta ya que ahora mismo recorre todos los informes
-		// falta ver si dto es null por error de id de paciente etc...
 		PacienteDTO dto = mostrarPorId(id);
-		List<InformeDTO> listaInformes = informeRepository.obtenerTodos().stream().filter(i -> i.getPacienteId().equals(id)).map(InformeMapper::toDTO).toList();
+		List<InformeDTO> listaInformes = informeRepository.obtenerTodos().stream()
+				.filter(i -> i.getPacienteId().equals(id)).map(InformeMapper::toDTO).toList();
 		dto.setInforme(listaInformes);
-		
+
 		return dto;
 	}
 }

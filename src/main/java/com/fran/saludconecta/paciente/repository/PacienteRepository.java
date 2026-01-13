@@ -12,8 +12,8 @@ import com.fran.saludconecta.paciente.dto.PacienteDTO;
 
 @Repository
 public class PacienteRepository {
-	
-	@Autowired
+
+    @Autowired
     private DSLContext dsl;
 
     public List<PacienteRecord> obtenerTodos() {
@@ -22,18 +22,18 @@ public class PacienteRepository {
 
     public PacienteRecord obtenerPorId(Integer id) {
         return dsl.selectFrom(Paciente.PACIENTE)
-                  .where(Paciente.PACIENTE.ID.eq(id))
-                  .fetchOne();
+                .where(Paciente.PACIENTE.ID.eq(id))
+                .fetchOne();
     }
 
     public PacienteRecord obtenerPorDni(String dni) {
         return dsl.selectFrom(Paciente.PACIENTE)
-                  .where(Paciente.PACIENTE.DNI.eq(dni))
-                  .fetchOne();
+                .where(Paciente.PACIENTE.DNI.eq(dni))
+                .fetchOne();
     }
-    
+
     public PacienteRecord guardar(PacienteRecord guardarRecord) {
-    	PacienteRecord record = dsl.newRecord(Paciente.PACIENTE);
+        PacienteRecord record = dsl.newRecord(Paciente.PACIENTE);
         record = guardarRecord;
         record.store();
         return record;

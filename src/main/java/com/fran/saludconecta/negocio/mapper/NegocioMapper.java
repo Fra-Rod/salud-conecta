@@ -10,10 +10,11 @@ import com.fran.saludconecta.negocio.dto.NegocioDTO;
 
 public class NegocioMapper {
 
-    public static NegocioDTO toDTO (NegocioRecord record) {
-        
-        if (record == null) return null;
-        
+    public static NegocioDTO toDTO(NegocioRecord record) {
+
+        if (record == null)
+            return null;
+
         return NegocioDTO.builder()
                 .id(record.get(Negocio.NEGOCIO.ID))
                 .nombre(record.get(Negocio.NEGOCIO.NOMBRE))
@@ -24,11 +25,12 @@ public class NegocioMapper {
                 .build();
     }
 
-    public static NegocioRecord fromDTO (NegocioDTO dto, DSLContext dsl) {
-        
-        if (dto == null) return null;
-        
-        NegocioRecord record = dsl.newRecord(Negocio.NEGOCIO    );
+    public static NegocioRecord fromDTO(NegocioDTO dto, DSLContext dsl) {
+
+        if (dto == null)
+            return null;
+
+        NegocioRecord record = dsl.newRecord(Negocio.NEGOCIO);
         // record.setId(dto.getId());
         record.setNombre(dto.getNombre().trim());
         record.setDireccion(dto.getDireccion().trim());

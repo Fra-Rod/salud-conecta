@@ -95,15 +95,14 @@ public class CalendarioVistaController {
             }
         }
 
-        Map<String, List<CitaDTO>> citasPorDia = new HashMap<>();
+        Map<Integer, List<CitaDTO>> citasPorDia = new HashMap<>();
         for (CitaDTO cita : citasMes) {
             int numeroDia = cita.getFechaCita().getDayOfMonth();
-            String claveDia = String.valueOf(numeroDia);
 
-            if (!citasPorDia.containsKey(claveDia)) {
-                citasPorDia.put(claveDia, new ArrayList<>());
+            if (!citasPorDia.containsKey(numeroDia)) {
+                citasPorDia.put(numeroDia, new ArrayList<>());
             }
-            citasPorDia.get(claveDia).add(cita);
+            citasPorDia.get(numeroDia).add(cita);
         }
 
         YearMonth mesAnterior = yearMonth.minusMonths(1);
